@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  thymeleaf:
+    cache: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/mmpdb?useSSL=false&allowPublicKeyRetrieval=true
+    username: root        # or your MySQL user
+    password: root   # or your MySQL password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update       # creates/updates tables automatically
+    show-sql: true

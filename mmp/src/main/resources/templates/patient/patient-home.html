@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Portal - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Patient Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="active" th:href="@{/patient/home}">HOME</a>
+            <a href="#" onclick="alert('Profile placeholder'); return false;">Profile</a>
+            <a th:href="@{/patient/home}">Schedule Appointment</a>
+            <a href="#" onclick="alert('Information placeholder'); return false;">Information</a>
+            <a th:href="@{/patient/fees}">Fees</a>
+            <a th:href="@{/patient/reports}">Reports</a>
+            <a th:href="@{/patient/messages}">Messages</a>
+            <a th:href="@{/patient/logout}">Logout</a>
+        </nav>
+        <div class="sidebar-footer">
+            Training build - Patient view
+        </div>
+    </aside>
+
+    <main class="layout-main">
+        <div class="card header-card">
+            <div>
+                <h2 th:text="${patient.firstName} + ' ' + ${patient.lastName}">Patient</h2>
+                <p th:text="'Username: ' + ${patient.username}">Username</p>
+            </div>
+            <div>
+                <form method="get" th:action="@{/patient/home}">
+                    <label>Filter by specialization</label>
+                    <input type="text" name="specializationFilter" th:value="${specializationFilter}" placeholder="e.g. Cardiologist">
+                    <button class="btn-secondary" type="submit">Filter</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card">
+                <h3>Schedule Appointment</h3>
+                <form method="post" th:action="@{/patient/appointments}">
+                    <label>Doctor</label>
+                    <select name="doctorId">
+                        <option th:each="d : ${doctors}"
+                                th:value="${d.id}"
+                                th:text="${d.name} + ' (' + ${d.specialization} + ')'"></option>
+                    </select>
+                    <label>Date &amp; Time</label>
+                    <input type="datetime-local" name="dateTime" required>
+                    <label>Reason</label>
+                    <input type="text" name="reason" required>
+                    <button class="btn-primary" type="submit">Create</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>Patient Portal</h3>
+                <p>Use this section to manage your visits:</p>
+                <ul>
+                    <li>Choose a doctor by specialization.</li>
+                    <li>Book new appointments.</li>
+                    <li>Cancel or mark visits as completed.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Appointments</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Appointment</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${appointments}">
+                    <td th:text="${#temporals.format(a.appointmentDateTime, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#temporals.format(a.appointmentDateTime, 'HH:mm')}"></td>
+                    <td th:text="${a.reason}"></td>
+                    <td th:text="${a.doctor.name}"></td>
+                    <td th:text="${a.status}"></td>
+                    <td>
+                        <form th:if="${a.status == 'SCHEDULED'}"
+                              th:action="@{'/patient/appointments/' + ${a.id} + '/cancel'}"
+                              method="post" style="display:inline;">
+                            <button class="btn-secondary" type="submit">Cancel</button>
+                        </form>
+                        <form th:if="${a.status == 'SCHEDULED'}"
+                              th:action="@{'/patient/appointments/' + ${a.id} + '/complete'}"
+                              method="post" style="display:inline;">
+                            <button class="btn-secondary" type="submit">Complete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

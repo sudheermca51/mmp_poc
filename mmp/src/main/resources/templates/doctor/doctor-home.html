@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Doctor Home - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Doctor Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="active" th:href="@{/doctor/home}"><span class="label">Home</span></a>
+            <a href="#" onclick="alert('Schedule placeholder'); return false;"><span class="label">Schedule</span></a>
+            <a href="#" onclick="alert('Messages placeholder'); return false;"><span class="label">Messages</span></a>
+            <a th:href="@{/doctor/logout}"><span class="label">Logout</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            Training build - Doctor view
+        </div>
+    </aside>
+    <main class="layout-main">
+        <div class="card header-card">
+            <div class="title-block">
+                <h2>Doctor Dashboard</h2>
+                <p class="subtext">Today's schedule and patient reports will be wired later.</p>
+            </div>
+            <div class="pill">
+                <span class="dot"></span>
+                <span>Phase 1 - Doctor Shell</span>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Training Scenarios</h3>
+            <ul class="subtext">
+                <li>Navigation between <strong>/patient</strong>, <strong>/admin</strong>, and <strong>/doctor</strong> URL spaces.</li>
+                <li>Later: verify doctor schedule using Selenium or manual checks.</li>
+            </ul>
+        </div>
+    </main>
+</div>
+</body>
+</html>

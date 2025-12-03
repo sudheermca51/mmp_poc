@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Messages</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Admin Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin/home}">HOME</a>
+            <a th:href="@{/admin/patients}">Patients</a>
+            <a th:href="@{/admin/claim-center}">Claim Center</a>
+            <a th:href="@{/admin/reports}">Reports</a>
+            <a class="active" th:href="@{/admin/messages}">Messages</a>
+            <a th:href="@{/admin/logout}">Logout</a>
+        </nav>
+    </aside>
+    <main class="layout-main">
+        <div class="card header-card">
+            <h2>Messages Inbox</h2>
+        </div>
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>From</th>
+                    <th>Text</th>
+                    <th>Reply</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${messages}">
+                    <td th:text="${#temporals.format(m.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${m.patient.firstName} + ' ' + ${m.patient.lastName}"></td>
+                    <td th:text="${m.senderRole}"></td>
+                    <td th:text="${m.text}"></td>
+                    <td>
+                        <form method="post" th:action="@{/admin/messages/reply}">
+                            <input type="hidden" name="patientId" th:value="${m.patient.id}">
+                            <input type="text" name="text" placeholder="Reply...">
+                            <button class="btn-secondary" type="submit">Send</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Patients</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Admin Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin/home}">HOME</a>
+            <a class="active" th:href="@{/admin/patients}">Patients</a>
+            <a th:href="@{/admin/claim-center}">Claim Center</a>
+            <a th:href="@{/admin/reports}">Reports</a>
+            <a th:href="@{/admin/messages}">Messages</a>
+            <a th:href="@{/admin/logout}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="layout-main">
+        <div class="card header-card">
+            <div>
+                <h2>Patients</h2>
+                <p>Approve or reject patients. Only approved patients can login.</p>
+            </div>
+            <div>
+                <form th:action="@{/admin/patients}" method="get">
+                    <label>Search</label>
+                    <input type="text" name="q" th:value="${query}" placeholder="Name or email">
+                    <button class="btn-secondary" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Approved</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${patients}">
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.username}"></td>
+                    <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
+                    <td th:text="${p.email}"></td>
+                    <td th:text="${p.approved}"></td>
+                    <td>
+                        <form th:action="@{'/admin/patients/' + ${p.id} + '/approve'}" method="post" style="display:inline;">
+                            <button class="btn-secondary" type="submit">Approve</button>
+                        </form>
+                        <form th:action="@{'/admin/patients/' + ${p.id} + '/reject'}" method="post" style="display:inline;">
+                            <button class="btn-secondary" type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

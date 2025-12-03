@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Claim Center</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Admin Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin/home}">HOME</a>
+            <a th:href="@{/admin/patients}">Patients</a>
+            <a class="active" th:href="@{/admin/claim-center}">Claim Center</a>
+            <a th:href="@{/admin/reports}">Reports</a>
+            <a th:href="@{/admin/messages}">Messages</a>
+            <a th:href="@{/admin/logout}">Logout</a>
+        </nav>
+    </aside>
+    <main class="layout-main">
+        <div class="card">
+            <h2>Claim Center</h2>
+            <p>Training placeholder for claim management.</p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

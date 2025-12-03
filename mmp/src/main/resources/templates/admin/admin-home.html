@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Portal - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Admin Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="active" th:href="@{/admin/home}">HOME</a>
+            <a th:href="@{/admin/patients}">Patients</a>
+            <a th:href="@{/admin/claim-center}">Claim Center</a>
+            <a th:href="@{/admin/reports}">Reports</a>
+            <a th:href="@{/admin/messages}">Messages</a>
+            <a th:href="@{/admin/logout}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="layout-main">
+        <div class="card header-card">
+            <div>
+                <h2>Admin Portal</h2>
+                <p th:text="${today}">Today</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Appointments Overview</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${appointments}">
+                    <td th:text="${#temporals.format(a.appointmentDateTime, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#temporals.format(a.appointmentDateTime, 'HH:mm')}"></td>
+                    <td th:text="${a.patient.firstName} + ' ' + ${a.patient.lastName}"></td>
+                    <td th:text="${a.doctor.name}"></td>
+                    <td th:text="${a.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

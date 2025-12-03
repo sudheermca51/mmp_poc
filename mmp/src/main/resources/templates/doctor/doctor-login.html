@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Doctor Login - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="center-layout">
+    <div class="card login-card">
+        <h2>Doctor Login</h2>
+        <p class="subtext">For training, you will later pick a doctor or use username/password.</p>
+        <form method="post" th:action="@{/doctor/login}">
+            <label>Doctor ID (placeholder)</label>
+            <input type="text" name="doctorId" required>
+            <button class="btn-primary" type="submit">Login</button>
+        </form>
+        <p class="subtext">In later phases this will be converted to a dropdown of doctors from DB.</p>
+    </div>
+</div>
+</body>
+</html>

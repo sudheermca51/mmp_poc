@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Login - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout center-layout">
+    <div class="card login-card">
+        <h2>Admin Login</h2>
+        <p>Demo admin: <strong>admin1 / admin123</strong></p>
+        <form method="post" th:action="@{/admin/login}">
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <button class="btn-primary" type="submit">Login</button>
+        </form>
+        <p th:if="${error}" th:text="${error}" class="error"></p>
+    </div>
+</div>
+</body>
+</html>

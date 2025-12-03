@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Registration - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout center-layout">
+    <div class="card login-card">
+        <h2>Patient Registration</h2>
+        <form method="post" th:action="@{/patient/register}">
+            <label>First Name</label>
+            <input type="text" name="firstName" required>
+            <label>Last Name</label>
+            <input type="text" name="lastName">
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <label>Email</label>
+            <input type="email" name="email">
+            <button class="btn-primary" type="submit">Register</button>
+        </form>
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p th:if="${message}" th:text="${message}"></p>
+        <p><a th:href="@{/patient/login}">Back to login</a></p>
+    </div>
+</div>
+</body>
+</html>

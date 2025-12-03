@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Login - MMP</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout center-layout">
+    <div class="card login-card">
+        <h2>Patient Login</h2>
+        <p>Demo login: <strong>patient1 / password</strong></p>
+        <form method="post" th:action="@{/patient/login}">
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <button class="btn-primary" type="submit">Login</button>
+        </form>
+        <p><a th:href="@{/patient/register}">New user? Register</a></p>
+        <p th:if="${error}" th:text="${error}" class="error"></p>
+    </div>
+</div>
+</body>
+</html>
