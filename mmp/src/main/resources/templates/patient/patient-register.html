@@ -20,6 +20,22 @@
             <label>Email</label>
             <input type="email" name="email">
             <button class="btn-primary" type="submit">Register</button>
+			<label>Phone</label>
+			<input type="text" name="phone">
+
+			<label>Gender</label>
+			<select name="gender">
+			    <option value="">Select</option>
+			    <option value="MALE">Male</option>
+			    <option value="FEMALE">Female</option>
+			    <option value="OTHER">Other</option>
+			</select>
+
+			<label>Date of Birth</label>
+			<input type="date" name="dob">
+
+			<label>Address</label>
+			<textarea name="address"></textarea>
         </form>
         <p class="error" th:if="${error}" th:text="${error}"></p>
         <p th:if="${message}" th:text="${message}"></p>

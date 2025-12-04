@@ -1,0 +1,36 @@
+<form th:action="@{/patient/profile}" th:object="${patientDto}" method="post" enctype="multipart/form-data">
+  <input type="hidden" th:field="*{id}" />
+
+  <div class="form-row">
+    <label>First Name</label>
+    <input type="text" th:field="*{firstName}" />
+  </div>
+
+  <div class="form-row">
+    <label>Last Name</label>
+    <input type="text" th:field="*{lastName}" />
+  </div>
+
+  <div class="form-row">
+    <label>Username</label>
+    <input type="text" th:field="*{username}" />
+    <div th:if="${usernameError}" th:text="${usernameError}" class="error"></div>
+  </div>
+
+  <div class="form-row">
+    <label>Password (leave blank to keep current)</label>
+    <input type="password" th:field="*{password}" placeholder="Leave blank to keep current"/>
+    <div class="small">Leave blank if you don't want to change password</div>
+  </div>
+
+  <div class="form-row">
+    <label>Email</label>
+    <input type="email" th:field="*{email}" />
+  </div>
+
+  <div class="form-row">
+    <label>Phone</label>
+    <input type="text" th:field="*{phone}" />
+  </div>
+
+  <div c

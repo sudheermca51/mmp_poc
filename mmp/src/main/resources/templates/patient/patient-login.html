@@ -9,7 +9,7 @@
     <div class="card login-card">
         <h2>Patient Login</h2>
         <p>Demo login: <strong>patient1 / password</strong></p>
-        <form method="post" th:action="@{/patient/login}">
+        <form th:action="@{/patient/doLogin}" method="post">
             <label>Username</label>
             <input type="text" name="username" required>
             <label>Password</label>

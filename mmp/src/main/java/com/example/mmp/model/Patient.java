@@ -10,51 +10,104 @@ import java.util.List;
 @Entity
 public class Patient {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(unique = true, nullable = false)
-    @NotBlank
-    private String username;
+	@Column(unique = true, nullable = false)
+	@NotBlank
+	private String username;
 
-    @NotBlank
-    private String password;
+	@NotBlank
+	private String password;
 
-    @NotBlank
-    private String firstName;
+	@NotBlank
+	private String firstName;
 
-    private String lastName;
+	private String lastName;
 
-    @Email
-    private String email;
+	@Email
+	private String email;
 
-    private boolean approved = false;
+	private boolean approved = false;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Appointment> appointments = new ArrayList<>();
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Appointment> appointments = new ArrayList<>();
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+	public Long getId() { return id; }
+	public void setId(Long id) { this.id = id; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+	public String getUsername() { return username; }
+	public void setUsername(String username) { this.username = username; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+	public String getPassword() { return password; }
+	public void setPassword(String password) { this.password = password; }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+	public String getFirstName() { return firstName; }
+	public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+	public String getLastName() { return lastName; }
+	public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+	public String getEmail() { return email; }
+	public void setEmail(String email) { this.email = email; }
 
-    public boolean isApproved() { return approved; }
-    public void setApproved(boolean approved) { this.approved = approved; }
+	public boolean isApproved() { return approved; }
+	public void setApproved(boolean approved) { this.approved = approved; }
 
-    public List<Appointment> getAppointments() { return appointments; }
-    public void setAppointments(List<Appointment> appointments) { this.appointments = appointments; }
+	public List<Appointment> getAppointments() { return appointments; }
+	public void setAppointments(List<Appointment> appointments) { this.appointments = appointments; }
+
+	// inside com.example.mmp.model.Patient
+
+	// new fields (add near other basic fields)
+	private String phone;
+	private String gender;
+	private String dob;     // store as "yyyy-MM-dd" string to match <input type="date"> easily
+	private String address;
+
+	// getters & setters
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getDob() {
+		return dob;
+	}
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	private String photoPath;
+
+	public String getPhotoPath() {
+	    return photoPath;
+	}
+
+	public void setPhotoPath(String photoPath) {
+	    this.photoPath = photoPath;
+	}
+	// inside Patient.java
+	@Column(name = "rejected", nullable = false)
+	private boolean rejected = false;
+
+	public boolean isRejected() { return rejected; }
+	public void setRejected(boolean rejected) { this.rejected = rejected; }
+
 }

@@ -31,13 +31,29 @@ public class PatientDashboardController {
         this.doctorRepo = doctorRepo;
     }
 
+//    private Patient getLoggedPatient(HttpSession session) {
+//        Object idObj = session.getAttribute("patientId");
+//        if (idObj == null) return null;
+//        Long id = (Long) idObj;
+//        return patientRepo.findById(id).orElse(null);
+//    }
     private Patient getLoggedPatient(HttpSession session) {
-        Object idObj = session.getAttribute("patientId");
-        if (idObj == null) return null;
-        Long id = (Long) idObj;
-        return patientRepo.findById(id).orElse(null);
-    }
+        Object obj = session.getAttribute("loggedInUser");
+        if (obj == null) return null;
 
+        // If you already stored the Patient object
+        if (obj instanceof Patient) {
+            return (Patient) obj;
+        }
+
+        // If you stored username string (recommended)
+        if (obj instanceof String) {
+            String username = ((String) obj).trim();
+            return patientRepo.findByUsername(username).orElse(null);
+        }
+
+        return null;
+    }
     @GetMapping("/home")
     public String home(@RequestParam(required = false) String specializationFilter,
                        Model model,
