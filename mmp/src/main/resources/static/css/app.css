@@ -232,4 +232,83 @@ th {
 .login-card {
   min-width: 340px;
   max-width: 380px;
+}  /* icon basics */
+/* ---------- Sidebar hover & active pill (final) ---------- */
+.sidebar-nav {
+  padding: 12px 10px;
+}
+
+/* make each menu link a full-width pill row */
+.sidebar-nav a {
+  display: flex;                /* icon + label in one row */
+  align-items: center;
+  gap: 12px;
+  width: 100%;                  /* crucial: fill container so background covers whole row */
+  box-sizing: border-box;
+  padding: 12px 18px;
+  text-decoration: none;
+  color: #cbd6df;               /* normal label */
+  border-radius: 28px;          /* pill shape */
+  transition: background 180ms ease, color 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* icon column fixed */
+.sidebar-nav .menu-svg,
+.sidebar-nav img.menu-icon {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: block;
+  color: #9aa6b0;               /* icon color */
+  filter: brightness(1);        /* remove odd filters that may invert */
+}
+
+/* label takes remaining space and is left aligned */
+.sidebar-nav a span {
+  flex: 1 1 auto;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  line-height: 1.15;
+}
+
+/* Hover state — full pill gradient like your screenshot */
+.sidebar-nav a:hover,
+.sidebar-nav a:focus {
+  background: linear-gradient(90deg,#23e87f,#29a8f5);
+  color: #01323a;               /* darker text on gradient */
+  outline: none;
+}
+
+/* Active state (selected) — same style, stronger contrast */
+.sidebar-nav a.active {
+  background: linear-gradient(90deg,#23e87f,#29a8f5);
+  color: #01323a;
+  box-shadow: 0 0 0 3px rgba(35,232,127,0.06) inset;
+}
+
+/* ensure icons change color on hover/active */
+.sidebar-nav a:hover .menu-svg,
+.sidebar-nav a:focus .menu-svg,
+.sidebar-nav a.active .menu-svg,
+.sidebar-nav a:hover img.menu-icon,
+.sidebar-nav a.active img.menu-icon {
+  color: #01323a;
+  filter: none;
+}
+
+/* In case something else forces transparent backgrounds, reinforce it */
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background-color: unset;
+}
+
+/* High specificity fallback if other CSS overrides – use only if necessary */
+/* .sidebar-nav > a:hover { background: linear-gradient(90deg,#23e87f,#29a8f5) !important; } */
+
+/* Responsive tweak */
+@media (max-width:420px) {
+  .sidebar-nav .menu-svg, .sidebar-nav img.menu-icon { flex: 0 0 24px; width:24px; height:24px; }
+  .sidebar-nav a { padding: 10px 12px; font-size: 15px; }
 }
