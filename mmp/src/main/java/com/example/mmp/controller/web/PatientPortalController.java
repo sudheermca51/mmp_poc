@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.mmp.model.Patient;
 import com.example.mmp.repository.PatientRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -36,7 +37,9 @@ public class PatientPortalController {
         this.passwordEncoder = passwordEncoder;
     }
 	@GetMapping("/login")
-	public String loginForm() {
+	public String loginForm(Model model) {
+		Object s = model.asMap().get("successMessage");
+	    System.out.println("DEBUG: flash successMessage = " + s);
 		return "patient/patient-login";
 	}
 
@@ -112,7 +115,7 @@ public class PatientPortalController {
 			@RequestParam(required = false) String phone,
 			@RequestParam(required = false) String gender,
 			@RequestParam(required = false) String dob,
-			@RequestParam(required = false) String address,
+			@RequestParam(required = false) String address, RedirectAttributes ra, HttpServletRequest request,
 			Model model) {
 
 		if (patientRepo.findByUsername(username).isPresent()) {
@@ -137,7 +140,19 @@ public class PatientPortalController {
 		p.setRejected(false);
 		patientRepo.save(p);
 
-		model.addAttribute("message", "Registration submitted. Wait for admin approval.");
+		 // message text
+	    String msg = "Thank you for registering with MMP. Once the admin approval is provided you will be able to login.";
+
+	    // 1) preferred: flash attribute (survives redirect)
+	    ra.addFlashAttribute("successMessage", msg);
+
+	    // 2) fallback: also put into session explicitly (in case flash lost)
+	    request.getSession().setAttribute("successMessage", msg);
+
+	    System.out.println("DEBUG: Registered user=" + username + " -> set flash+session successMessage");
+	    
+	    model.addAttribute("successMessage", msg);
+	    
 		return "patient/patient-login";
 	}
 

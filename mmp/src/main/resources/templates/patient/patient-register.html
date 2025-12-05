@@ -1,115 +1,243 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Patient Registration - MMP</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-    <!-- minimal inline styles for two-column layout (safe & non-invasive) -->
-    <style>
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px 18px;
-        align-items: start;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      .form-row { display:flex; flex-direction:column; }
-      .form-row.full { grid-column: 1 / -1; }
-      .form-row label { margin-bottom:6px; font-weight:600; color:#2b4250; font-size:13px; }
-      .form-row input, .form-row textarea, .form-row select {
-        width:100%;
-        padding:10px 12px;
-        border-radius:8px;
-        border:1px solid #e6eef9;
-        background:#fff;
-        box-sizing:border-box;
-        font-size:14px;
-        color:#0f172a;
-      }
-      .form-row textarea { min-height:90px; resize:vertical; }
-      .card.login-card { width:100%; max-width:920px; padding:22px; }
-      .card.login-card h2 { margin-top:0; margin-bottom:14px; }
-      .btn-primary { background: linear-gradient(90deg,#22c55e,#0ea5e9); color:#fff; padding:10px 16px; border-radius:999px; border:none; font-weight:700; cursor:pointer;}
-      @media (max-width:780px) { .form-grid { grid-template-columns: 1fr; gap:12px; } }
-    </style>
+  <meta charset="utf-8" />
+  <title>Patient Registration - MMP</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+
+  <style>
+    /* Page background to match MMP portal */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Center layout */
+    .center-layout {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 36px 18px;
+      box-sizing: border-box;
+    }
+
+    /* Card background */
+    .card.login-card {
+      width: 100%;
+      max-width: 920px;
+      padding: 30px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #e8f3ff 0%, #ffffff 70%);
+      border: 1px solid rgba(14, 165, 233, 0.10);
+      box-shadow: 0 8px 30px rgba(12, 35, 63, 0.08);
+      box-sizing: border-box;
+    }
+
+    /* Heading with gradient text */
+    .card.login-card h2 {
+      margin: 0 0 12px 0;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+
+      background: linear-gradient(90deg, #22c55e, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* small note about required fields */
+    .required-note {
+      font-size: 13px;
+      color: #475569;
+      margin: 6px 0 14px 0;
+      text-align: center;
+    }
+
+    .req {
+      color: #e11d48;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    /* Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px 18px;
+      align-items: start;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form-row { display: flex; flex-direction: column; }
+    .form-row.full { grid-column: 1 / -1; }
+
+    .form-row label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #2b4250;
+      font-size: 13px;
+    }
+
+    /* Inputs */
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e6eef9;
+      background: #f4fbff;
+      font-size: 14px;
+      color: #0f172a;
+      box-sizing: border-box;
+    }
+
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(14,165,233,.08);
+      border-color: #0ea5e9;
+    }
+
+    .form-row textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    /* Button styling (IDENTICAL for both button & anchor) */
+    .btn-primary {
+      background: linear-gradient(90deg, #22c55e, #0ea5e9);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 700;
+      font-family: inherit;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      cursor: pointer;
+      min-width: 150px;
+      display: inline-block;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(14,165,233,.12);
+      transition: transform .08s ease, box-shadow .12s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(14,165,233,.14);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    a.btn-primary {
+      text-decoration: none;
+      display: inline-block;
+      line-height: 1;
+    }
+
+    /* Button row */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width:780px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .action-row { flex-direction: column; }
+      .btn-primary { min-width: 220px; }
+    }
+  </style>
 </head>
+
 <body>
-<div class="layout center-layout">
+  <div class="layout center-layout">
     <div class="card login-card">
-        <h2>Patient Registration</h2>
 
-        <!-- main form: body wrapped with form-grid -->
-        <form method="post" th:action="@{/patient/register}">
-         <div class="register-grid">
+      <h2>Patient Registration</h2>
 
-            <!-- First + Last (row) -->
-            <div class="register-field">
-              <label for="firstName">First Name</label>
-              <input id="firstName" type="text" name="firstName" required>
-            </div>
+      <!-- required-note -->
+      <p class="required-note">
+        Fields marked <span class="req">*</span> are mandatory.
+      </p>
 
-            <div class="register-field">
-              <label for="lastName">Last Name</label>
-              <input id="lastName" type="text" name="lastName">
-            </div>
+      <form method="post" th:action="@{/patient/register}">
+        <div class="form-grid">
 
-            <!-- Username + Password -->
-            <div class="register-field">
-              <label for="username">Username</label>
-              <input id="username" type="text" name="username" required>
-            </div>
+          <div class="form-row">
+            <label for="firstName">First Name <span class="req">*</span></label>
+            <input id="firstName" type="text" name="firstName" required autocomplete="given-name">
+          </div>
 
-           <div class="register-field">
-              <label for="password">Password</label>
-              <input id="password" type="password" name="password" required>
-            </div>
+          <div class="form-row">
+            <label for="lastName">Last Name <span class="req">*</span></label>
+            <input id="lastName" type="text" name="lastName" required autocomplete="family-name">
+          </div>
 
-            <!-- Email + Phone -->
-           <div class="register-field">
-              <label for="email">Email</label>
-              <input id="email" type="email" name="email">
-            </div>
+          <div class="form-row">
+            <label for="username">Username <span class="req">*</span></label>
+            <input id="username" type="text" name="username" required autocomplete="username">
+          </div>
 
-           <div class="register-field">
-              <label for="phone">Phone</label>
-              <input id="phone" type="text" name="phone">
-            </div>
+          <div class="form-row">
+            <label for="password">Password <span class="req">*</span></label>
+            <input id="password" type="password" name="password" required autocomplete="new-password">
+          </div>
 
-            <!-- Gender + DOB -->
-            <div class="register-field">
-              <label for="gender">Gender</label>
-              <select id="gender" name="gender">
-                <option value="">Select</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
+          <div class="form-row">
+            <label for="email">Email <span class="req">*</span></label>
+            <input id="email" type="email" name="email" required autocomplete="email">
+          </div>
 
-         <div class="register-field">
-              <label for="dob">Date of Birth</label>
-              <input id="dob" type="date" name="dob">
-            </div>
+          <div class="form-row">
+            <label for="phone">Phone <span class="req">*</span></label>
+            <input id="phone" type="text" name="phone" required inputmode="tel">
+          </div>
 
-            <!-- Address spans full width -->
-                <div class="register-field full">
-              <label for="address">Address</label>
-              <textarea id="address" name="address"></textarea>
-            </div>
+          <div class="form-row">
+            <label for="gender">Gender <span class="req">*</span></label>
+            <select id="gender" name="gender" required>
+              <option value="">Select</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+            </select>
+          </div>
 
-            <!-- Register button row spans full width -->
-                <div class="register-field full" style="display:flex; align-items:center; gap:12px; margin-top:6px;">
+          <div class="form-row">
+            <label for="dob">Date of Birth <span class="req">*</span></label>
+            <input id="dob" type="date" name="dob" required>
+          </div>
+
+          <div class="form-row full">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" />
+          </div>
+
+          <div class="form-row full">
+            <div class="action-row">
               <button class="btn-primary" type="submit">Register</button>
-              <a th:href="@{/patient/login}" style="margin-left:8px; color:#475569; text-decoration:none; padding:8px 12px; border-radius:8px; border:1px solid #e6eef9;">Back to login</a>
+              <a th:href="@{/patient/login}" class="btn-primary">Back to login</a>
             </div>
+          </div>
 
-          </div> <!-- /.form-grid -->
-        </form>
-
-        <p class="error" th:if="${error}" th:text="${error}" style="margin-top:10px;"></p>
-        <p th:if="${message}" th:text="${message}" style="margin-top:6px;"></p>
+        </div>
+      </form>
 
     </div>
-</div>
+  </div>
 </body>
 </html>

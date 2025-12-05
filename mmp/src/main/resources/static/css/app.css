@@ -499,4 +499,52 @@ th {
     grid-template-columns: 1fr;
   }
 }
+/* ------------------------------
+   MMP GLOBAL TABLE STYLE
+   ------------------------------ */
+
+.mmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: linear-gradient(180deg, #ffffff 0%, #f4fbff 100%);
+    border: 1px solid #e6eef9;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.mmp-table thead {
+    background: #e9f5ff; /* light blue header */
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.mmp-table th,
+.mmp-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e6eef9;
+}
+
+.mmp-table tr:last-child td {
+    border-bottom: none;
+}
+
+.mmp-table tbody tr:hover {
+    background: rgba(14,165,233,0.06); /* hover highlight */
+    transition: background 0.2s ease;
+}
+.card.login-card {
+  width: 100%;
+  max-width: 920px;
+  padding: 30px;
+  border-radius: 16px;
+
+  /* modern hospital-style gradient panel */
+  background: linear-gradient(145deg, #e8f3ff 0%, #ffffff 70%);
+
+  box-shadow: 0 8px 30px rgba(12, 35, 63, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.10);
+
+  box-sizing: border-box;
+}
 
