@@ -35,7 +35,6 @@ public class PatientPortalController {
         this.patientRepo = patientRepo;
         this.passwordEncoder = passwordEncoder;
     }
-
 	@GetMapping("/login")
 	public String loginForm() {
 		return "patient/patient-login";

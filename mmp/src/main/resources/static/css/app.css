@@ -312,3 +312,77 @@ th {
   .sidebar-nav .menu-svg, .sidebar-nav img.menu-icon { flex: 0 0 24px; width:24px; height:24px; }
   .sidebar-nav a { padding: 10px 12px; font-size: 15px; }
 }
+/* Card wrapper */
+.table-card {
+  background: linear-gradient(180deg, #f6fbff, #ffffff);
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 6px 24px rgba(18, 38, 63, 0.06);
+  overflow: hidden;
+}
+
+/* Table */
+.table-styled {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 15px;
+  color: #26323a;
+}
+
+/* Header segmented look: each th gets the gradient block */
+.table-styled thead th {
+  padding: 18px 22px;
+  font-weight: 700;
+  color: #fff;
+  text-align: left;
+  vertical-align: middle;
+  /* give a subtle inner separation line at bottom */
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+/* individual gradients for the header segments (you can tweak colors) */
+.table-styled thead th:nth-child(1) { background: linear-gradient(90deg,#6b2cff,#4c72ff); }
+.table-styled thead th:nth-child(2) { background: linear-gradient(90deg,#5b3bff,#6b2cff); }
+.table-styled thead th:nth-child(3) { background: linear-gradient(90deg,#6b2cff,#4c72ff); }
+.table-styled thead th:nth-child(4) { background: linear-gradient(90deg,#4c72ff,#6b2cff); }
+.table-styled thead th:nth-child(5) { background: linear-gradient(90deg,#6b2cff,#4c72ff); }
+.table-styled thead th:nth-child(6) { background: linear-gradient(90deg,#5b3bff,#6b2cff); }
+
+/* rounded top corners */
+.table-styled thead th:first-child  { border-top-left-radius: 12px; }
+.table-styled thead th:last-child   { border-top-right-radius: 12px; }
+
+/* body rows */
+.table-styled tbody td {
+  padding: 20px 22px;
+  background: #ffffff;
+  border-bottom: 1px solid #eef3f7;
+}
+
+/* last row no border-bottom */
+.table-styled tbody tr:last-child td { border-bottom: none; }
+
+/* subtle alternating effect (very light) */
+.table-styled tbody tr:nth-child(even) td { background: #fbfcff; }
+
+/* hover */
+.table-styled tbody tr:hover td { background: #f1f9ff; cursor: default; }
+
+/* small responsive adjustments */
+@media (max-width: 880px) {
+  .table-styled thead th, .table-styled tbody td { padding: 12px 10px; font-size: 14px; }
+}
+
+/* style for buttons (actions) */
+.table-btn {
+  display:inline-block;
+  margin-left:6px;
+  padding:7px 12px;
+  font-size:13px;
+  border-radius:6px;
+  border:1px solid rgba(0,0,0,0.06);
+  background:#fff;
+  color:#2b3a4a;
+}
+.table-btn.secondary { background:#f8fafc; }

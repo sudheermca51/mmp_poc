@@ -1,0 +1,43 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"/></head>
+<body>
+  <!-- fragment name: sidebar
+       Accepts parameters: activeMenu, patient -->
+  <div th:fragment="sidebar (activeMenu, patient)">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">MMP</div>
+        <div class="subtitle">Patient Portal</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
+          <!-- home icon -->
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Home</span>
+        </a>
+
+        <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments/new}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Schedule Appointment</span>
+        </a>
+
+        <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Messages</span>
+        </a>
+
+        <a th:href="@{/patient/logout}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        Training build - Patient view
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
