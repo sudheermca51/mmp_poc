@@ -3,43 +3,112 @@
 <head>
     <title>Patient Registration - MMP</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <!-- minimal inline styles for two-column layout (safe & non-invasive) -->
+    <style>
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px 18px;
+        align-items: start;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .form-row { display:flex; flex-direction:column; }
+      .form-row.full { grid-column: 1 / -1; }
+      .form-row label { margin-bottom:6px; font-weight:600; color:#2b4250; font-size:13px; }
+      .form-row input, .form-row textarea, .form-row select {
+        width:100%;
+        padding:10px 12px;
+        border-radius:8px;
+        border:1px solid #e6eef9;
+        background:#fff;
+        box-sizing:border-box;
+        font-size:14px;
+        color:#0f172a;
+      }
+      .form-row textarea { min-height:90px; resize:vertical; }
+      .card.login-card { width:100%; max-width:920px; padding:22px; }
+      .card.login-card h2 { margin-top:0; margin-bottom:14px; }
+      .btn-primary { background: linear-gradient(90deg,#22c55e,#0ea5e9); color:#fff; padding:10px 16px; border-radius:999px; border:none; font-weight:700; cursor:pointer;}
+      @media (max-width:780px) { .form-grid { grid-template-columns: 1fr; gap:12px; } }
+    </style>
 </head>
 <body>
 <div class="layout center-layout">
     <div class="card login-card">
         <h2>Patient Registration</h2>
+
+        <!-- main form: body wrapped with form-grid -->
         <form method="post" th:action="@{/patient/register}">
-            <label>First Name</label>
-            <input type="text" name="firstName" required>
-            <label>Last Name</label>
-            <input type="text" name="lastName">
-            <label>Username</label>
-            <input type="text" name="username" required>
-            <label>Password</label>
-            <input type="password" name="password" required>
-            <label>Email</label>
-            <input type="email" name="email">
-            <button class="btn-primary" type="submit">Register</button>
-			<label>Phone</label>
-			<input type="text" name="phone">
+         <div class="register-grid">
 
-			<label>Gender</label>
-			<select name="gender">
-			    <option value="">Select</option>
-			    <option value="MALE">Male</option>
-			    <option value="FEMALE">Female</option>
-			    <option value="OTHER">Other</option>
-			</select>
+            <!-- First + Last (row) -->
+            <div class="register-field">
+              <label for="firstName">First Name</label>
+              <input id="firstName" type="text" name="firstName" required>
+            </div>
 
-			<label>Date of Birth</label>
-			<input type="date" name="dob">
+            <div class="register-field">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" type="text" name="lastName">
+            </div>
 
-			<label>Address</label>
-			<textarea name="address"></textarea>
+            <!-- Username + Password -->
+            <div class="register-field">
+              <label for="username">Username</label>
+              <input id="username" type="text" name="username" required>
+            </div>
+
+           <div class="register-field">
+              <label for="password">Password</label>
+              <input id="password" type="password" name="password" required>
+            </div>
+
+            <!-- Email + Phone -->
+           <div class="register-field">
+              <label for="email">Email</label>
+              <input id="email" type="email" name="email">
+            </div>
+
+           <div class="register-field">
+              <label for="phone">Phone</label>
+              <input id="phone" type="text" name="phone">
+            </div>
+
+            <!-- Gender + DOB -->
+            <div class="register-field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option value="">Select</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+
+         <div class="register-field">
+              <label for="dob">Date of Birth</label>
+              <input id="dob" type="date" name="dob">
+            </div>
+
+            <!-- Address spans full width -->
+                <div class="register-field full">
+              <label for="address">Address</label>
+              <textarea id="address" name="address"></textarea>
+            </div>
+
+            <!-- Register button row spans full width -->
+                <div class="register-field full" style="display:flex; align-items:center; gap:12px; margin-top:6px;">
+              <button class="btn-primary" type="submit">Register</button>
+              <a th:href="@{/patient/login}" style="margin-left:8px; color:#475569; text-decoration:none; padding:8px 12px; border-radius:8px; border:1px solid #e6eef9;">Back to login</a>
+            </div>
+
+          </div> <!-- /.form-grid -->
         </form>
-        <p class="error" th:if="${error}" th:text="${error}"></p>
-        <p th:if="${message}" th:text="${message}"></p>
-        <p><a th:href="@{/patient/login}">Back to login</a></p>
+
+        <p class="error" th:if="${error}" th:text="${error}" style="margin-top:10px;"></p>
+        <p th:if="${message}" th:text="${message}" style="margin-top:6px;"></p>
+
     </div>
 </div>
 </body>
