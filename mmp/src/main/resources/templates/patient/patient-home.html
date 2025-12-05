@@ -91,7 +91,7 @@
     </aside>
 
     <main class="layout-main">
-        <div class="card header-card">
+        <div th:if="false" class="card header-card">
             <div>
                 <h2 th:text="${patient.firstName} + ' ' + ${patient.lastName}">Patient</h2>
                 <p th:text="'Username: ' + ${patient.username}">Username</p>
@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div th:if="false" class="row">
             <div class="card">
                 <h3>Schedule Appointment</h3>
                 <form method="post" th:action="@{/patient/appointments}">

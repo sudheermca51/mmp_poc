@@ -1,9 +1,68 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <meta charset="utf-8"/>
   <title>New Appointment</title>
   <link rel="stylesheet" th:href="@{/css/app.css}">
+  <script>
+    (function(){
+      // doctor card selection
+      document.querySelectorAll('.doctor-card').forEach(function(card){
+        card.addEventListener('click', function(){
+          // clear previous selection
+          document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+          // mark selected
+          card.classList.add('selected');
+          // set hidden field
+          var did = card.getAttribute('data-doctor-id');
+          document.getElementById('doctorId').value = did;
+        });
+      });
+
+      // flatpickr init with datetime
+      function initDateTimePicker() {
+        if (typeof flatpickr !== 'undefined') {
+          flatpickr("#dateTimeInput", {
+            enableTime: true,
+            dateFormat: "Y-m-d\\TH:i",   // matches ISO-like value 'yyyy-mm-ddTHH:MM' good for binding
+            minDate: "today",
+            time_24hr: true,
+            minuteIncrement: 15
+          });
+        } else {
+          // fallback: turn into native datetime-local if browser supports it
+          var el = document.getElementById('dateTimeInput');
+          try {
+            el.type = 'datetime-local';
+          } catch(e){
+            // nothing
+          }
+        }
+      }
+
+      // run after DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDateTimePicker);
+      } else {
+        initDateTimePicker();
+      }
+
+      // optional: simple validation before submit to ensure a doctor chosen
+      var form = document.querySelector('form[th\\:action^="@{/patient/appointments/new}"], form[action="/patient/appointments/new"]') || document.querySelector('form');
+      if(form){
+        form.addEventListener('submit', function(e){
+          var doctorVal = document.getElementById('doctorId').value;
+          if(!doctorVal || doctorVal.trim()===''){
+            e.preventDefault();
+            alert('Please select a doctor first.');
+            return false;
+          }
+        });
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -97,16 +156,56 @@
 
         <form method="post" th:action="@{/patient/appointments/new}">
           
-          <label>Doctor</label>
+        <!--  <label>Doctor</label>
           <select name="doctorId" required>
             <option th:each="d : ${doctors}"
                     th:value="${d.id}"
                     th:text="${d.name + ' (' + d.specialization + ')'}">
             </option>
-          </select>
+          </select>-->
+		  <label>Choose Doctor</label>
 
-          <label>Date &amp; Time</label>
-          <input type="datetime-local" name="dateTime" required/>
+		  <!-- Hidden field -->
+		  <input type="hidden" name="doctorId" id="doctorId" required>
+
+		  <div class="doctor-grid" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;">
+		      <div th:each="d : ${doctors}"
+		           class="doctor-card"
+		           th:attr="data-doctor-id=${d.id}, data-doctor-name=${d.name}"
+		           style="border:1px solid #e5e7eb; padding:12px; border-radius:10px; width:200px; cursor:pointer;
+		                  background:#fff; box-shadow:0 6px 16px rgba(15,23,42,0.04); text-align:center;">
+
+		          <!-- FIXED IMAGE LINE -->
+		          <img th:src="@{'/images/doctors/' + ${d.photoPath}}"
+		               alt="Doctor"
+		               style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:10px;"
+		               onerror="this.src='/images/default-doctor.png';"/>
+
+		          <div style="font-weight:700; margin-bottom:4px;" th:text="${d.name}">Doctor Name</div>
+
+		          <div style="font-size:13px; color:#6b7280;" th:text="${d.specialization}">Specialization</div>
+
+		          <div class="selected-badge"
+		               style="display:none; margin-top:8px; font-size:13px; color:#065f46;">
+		              Selected ✓
+		          </div>
+		      </div>
+		  </div>
+
+		  <style>
+		      .doctor-card.selected {
+		          outline: 3px solid rgba(59,130,246,0.18);
+		          box-shadow: 0 12px 40px rgba(14,165,233,0.06);
+		      }
+		      .doctor-card.selected .selected-badge { display:block; }
+		  </style>
+
+         <!-- <label>Date &amp; Time</label>
+          <input type="datetime-local" name="dateTime" required/>-->
+		  <label>Date &amp; Time</label>
+		  <input id="dateTimeInput" name="dateTime" type="text" required
+		         placeholder="Select date & time" style="width:100%; padding:8px; border-radius:6px; border:1px solid #d1d5db;"
+		         data-native-fallback="true"/>
 
           <label>Reason</label>
           <input type="text" name="reason" required/>
@@ -121,6 +220,75 @@
     </main>
 
   </div> <!-- ✅ Correct closing for .layout -->
+  <script>
+  (function(){
+    // 1) doctor card click handler (delegated, safe if cards are dynamic)
+    document.addEventListener('click', function(evt){
+      const card = evt.target.closest('.doctor-card');
+      if(!card) return;
+
+      // remove previous selected
+      document.querySelectorAll('.doctor-card.selected').forEach(c => c.classList.remove('selected'));
+      // mark current
+      card.classList.add('selected');
+
+      // set hidden field value
+      const did = card.getAttribute('data-doctor-id') || card.dataset.doctorId;
+      const hid = document.getElementById('doctorId');
+      if(hid) hid.value = did || '';
+
+      // optional: move focus to date input for faster flow
+      const dt = document.getElementById('dateTimeInput');
+      if(dt) dt.focus();
+    });
+
+    // 2) init Flatpickr on the date/time input
+    function initFlatpickr() {
+      const el = document.getElementById('dateTimeInput');
+      if(!el) return;
+
+      if(window.flatpickr) {
+        // keep format friendly for backend binding (YYYY-MM-DD HH:MM)
+        flatpickr(el, {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: true,
+          minuteIncrement: 15,
+          minDate: "today",
+          allowInput: false
+        });
+      } else {
+        // fallback: use native datetime-local where available
+        try {
+          el.type = 'datetime-local';
+          el.min = new Date().toISOString().slice(0,16); // yyyy-mm-ddThh:mm
+        } catch(e) { /* ignore */ }
+      }
+    }
+
+    // 3) ensure a doctor is chosen before submit (small UX guard)
+    (function attachSubmitGuard(){
+      const form = document.querySelector('form[th\\:action*="/patient/appointments/new"], form[action="/patient/appointments/new"]') || document.querySelector('form');
+      if(!form) return;
+      form.addEventListener('submit', function(e){
+        const hid = document.getElementById('doctorId');
+        if(!hid || !hid.value || hid.value.trim()==='') {
+          e.preventDefault();
+          alert('Please select a doctor before creating the appointment.');
+          // focus first available doctor card
+          const first = document.querySelector('.doctor-card');
+          if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+          return false;
+        }
+      });
+    })();
+
+    // DOM ready init
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFlatpickr);
+    else initFlatpickr();
+
+  })();
+  </script>
 
 </body>
 </html>
