@@ -7,7 +7,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline
 
 # Now copy source code and build
-COPY src ./src
+COPY mmp/src ./mmp/src
 RUN mvn -DskipTests clean package
 
 # ---- Stage 2: Create final lightweight image ----
