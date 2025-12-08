@@ -115,7 +115,8 @@ public class PatientPortalController {
 			@RequestParam(required = false) String phone,
 			@RequestParam(required = false) String gender,
 			@RequestParam(required = false) String dob,
-			@RequestParam(required = false) String address, RedirectAttributes ra, HttpServletRequest request,
+			//@RequestParam(required = false) String address, 
+			RedirectAttributes ra, HttpServletRequest request,
 			Model model) {
 
 		if (patientRepo.findByUsername(username).isPresent()) {
@@ -134,7 +135,7 @@ public class PatientPortalController {
 		p.setPhone(phone);
 		p.setGender(gender);
 		p.setDob(dob);          // adjust type if your field is Date/LocalDate
-		p.setAddress(address);
+		//p.setAddress(address);
 
 		p.setApproved(false);
 		p.setRejected(false);
