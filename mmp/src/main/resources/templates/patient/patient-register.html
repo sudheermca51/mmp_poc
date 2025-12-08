@@ -4,131 +4,7 @@
   <meta charset="utf-8" />
   <title>Patient Registration - MMP</title>
   <link rel="stylesheet" th:href="@{/css/app.css}">
-  <script>
-  (function () {
-    const input = document.getElementById('username');
-    const btn = document.getElementById('checkBtn');
-    const msg = document.getElementById('usernameMsg');
-    const suggEl = document.getElementById('suggestions');
-
-    if (!input || !btn || !msg || !suggEl) return; // safety
-
-    // debounce helper
-    function debounce(fn, wait = 350) {
-      let t;
-      return (...args) => {
-        clearTimeout(t);
-        t = setTimeout(() => fn(...args), wait);
-      };
-    }
-
-    // small helper to set message
-    function setMessage(text, color = '#0f172a') {
-      msg.style.color = color;
-      msg.textContent = text;
-    }
-
-    // create suggestion buttons
-    function showSuggestions(base) {
-      const s1 = base + Math.floor(Math.random() * 90 + 10);
-      const s2 = base + '_' + (Math.floor(Math.random() * 9) + 1);
-      const s3 = base + new Date().getFullYear();
-
-      suggEl.innerHTML = ''; // clear
-      [s1, s2, s3].forEach(s => {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'sugg'; // you can style .sugg in CSS
-        b.style.marginRight = '8px';
-        b.style.padding = '6px 10px';
-        b.style.borderRadius = '6px';
-        b.style.border = '1px solid rgba(0,0,0,0.06)';
-        b.style.background = '#fff';
-        b.style.cursor = 'pointer';
-        b.textContent = s;
-        b.addEventListener('click', () => {
-          input.value = s;
-          suggEl.innerHTML = '';
-          checkNow(s); // check new suggestion immediately
-        });
-        suggEl.appendChild(b);
-      });
-    }
-
-    // disable/enable UI during request
-    function setLoading(isLoading) {
-      btn.disabled = isLoading;
-      if (isLoading) {
-        btn.dataset.orig = btn.textContent;
-        btn.textContent = 'Checking...';
-        btn.style.opacity = 0.9;
-      } else {
-        if (btn.dataset.orig) btn.textContent = btn.dataset.orig;
-        btn.style.opacity = 1;
-      }
-    }
-
-    // validate username format client-side (same rules as backend)
-    function validFormat(u) {
-      return /^[a-z0-9._-]{3,30}$/.test(u);
-    }
-
-    // main check function (calls backend)
-    async function checkNow(rawUsername) {
-      const username = (rawUsername || input.value || '').trim().toLowerCase();
-      suggEl.innerHTML = '';
-      setMessage('', '#0f172a');
-
-      if (!username) {
-        setMessage('');
-        return;
-      }
-
-      if (!validFormat(username)) {
-        setMessage('Invalid: use 3–30 chars (letters, numbers, ., _ or -).', 'crimson');
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const url = '/api/user/check-username?username=' + encodeURIComponent(username);
-        const res = await fetch(url, { method: 'GET', cache: 'no-store' });
-        if (!res.ok) throw new Error('Network');
-        const data = await res.json();
-
-        if (!data.validFormat) {
-          setMessage('Invalid username format.', 'crimson');
-        } else if (data.available) {
-          setMessage(`Good — "${data.username}" is available.`, 'green');
-        } else {
-          setMessage(`Sorry — "${data.username}" is taken.`, 'crimson');
-          const base = (data.username || '').replace(/[^a-z0-9]/g, '') || data.username;
-          showSuggestions(base);
-        }
-      } catch (e) {
-        setMessage('Could not check availability right now.', 'orange');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // debounce live-check while typing (non-blocking UX)
-    const debounced = debounce(() => checkNow());
-
-    // events
-    input.addEventListener('input', debounced);
-    btn.addEventListener('click', () => checkNow());
-
-    // optional: press Enter inside username triggers check
-    input.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter') {
-        ev.preventDefault();
-        checkNow();
-      }
-    });
-
-  })();
-  </script>
+  
 
   <style>
     /* Page background to match MMP portal */
@@ -214,27 +90,26 @@
       font-size: 13px;
     }
 
-    /* Inputs */
-    .form-row input,
-    .form-row textarea,
-    .form-row select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #e6eef9;
-      background: #f4fbff;
-      font-size: 14px;
-      color: #0f172a;
-      box-sizing: border-box;
-    }
+	.form-row input,
+	.form-row textarea,
+	.form-row select {
+	  padding: 10px 12px;
+	  border-radius: 8px;
+	  border: 1px solid #cbd5e1; /* clean thin border */
+	  background: #ffffff;
+	  font-size: 15px;
+	  color: #0f172a;
+	  transition: border-color 0.2s ease;
+	  box-sizing: border-box;
+	}
 
-    .form-row input:focus,
-    .form-row textarea:focus,
-    .form-row select:focus {
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(14,165,233,.08);
-      border-color: #0ea5e9;
-    }
+	.form-row input:focus,
+	.form-row textarea:focus,
+	.form-row select:focus {
+	  border-color: #0ea5e9;   /* bright blue focus */
+	  outline: none;
+	  box-shadow: none;        /* no glow — clean minimal look */
+	}
 
     .form-row textarea {
       min-height: 90px;
@@ -405,5 +280,95 @@
 
     </div>
   </div>
+  <script>
+  /* Diagnostic + fallback script for Check availability */
+  (function () {
+    // Run after DOM ready in case script was included in head
+    function onReady(fn) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+      } else {
+        fn();
+      }
+    }
+
+    onReady(function () {
+      console.log('[DEBUG] check-availability script running');
+
+      const input = document.getElementById('username');
+      const btn = document.getElementById('checkBtn');
+      const msg = document.getElementById('usernameMsg');
+      const suggEl = document.getElementById('suggestions');
+
+      // Basic presence checks
+      console.log('[DEBUG] username element =>', input);
+      console.log('[DEBUG] checkBtn element =>', btn);
+      console.log('[DEBUG] usernameMsg element =>', msg);
+      console.log('[DEBUG] suggestions element =>', suggEl);
+
+      if (!btn) {
+        // fallback: attach onclick directly to button if it exists but listener not attached
+        console.warn('[DEBUG] button not found - cannot attach event listener');
+        return;
+      }
+
+      // Safety: remove previous listeners (in case of hot-reload)
+      btn.replaceWith(btn.cloneNode(true));
+      const newBtn = document.getElementById('checkBtn');
+
+      // core check function
+      async function doCheck() {
+        try {
+          const username = (input && input.value || '').trim().toLowerCase();
+          console.log('[DEBUG] doCheck username=', username);
+          if (!username) {
+            if (msg) { msg.style.color='crimson'; msg.textContent = 'The username cannot be blank. Please choose your desired value.'; }
+            return;
+          }
+          if (msg) { msg.style.color=''; msg.textContent = 'Checking…'; }
+          const res = await fetch('/api/user/check-username?username=' + encodeURIComponent(username), { cache: 'no-store' });
+          console.log('[DEBUG] fetch response status=', res.status);
+          if (!res.ok) {
+            const text = await res.text().catch(()=> '');
+            console.error('[DEBUG] fetch error body:', text);
+            if (msg) { msg.style.color='orange'; msg.textContent = 'Server error: ' + res.status; }
+            return;
+          }
+          const json = await res.json();
+          console.log('[DEBUG] response json=', json);
+          if (!json.validFormat) {
+            if (msg) { msg.style.color='crimson'; msg.textContent = 'Invalid format'; }
+          } else if (json.available) {
+            if (msg) { msg.style.color='green'; msg.textContent = `Yippie! The "${json.username}" you've chosen is available`; }
+          } else {
+            if (msg) { msg.style.color='#0288d1'; msg.textContent = `Sorry, the ID "${json.username}" is already used`; }
+            if (suggEl) {
+              const base = (json.username || '').replace(/[^a-z0-9]/g,'') || json.username;
+              suggEl.innerHTML = '<button type="button" class="sugg">' + base + '01</button>';
+            }
+          }
+        } catch (err) {
+          console.error('[DEBUG] exception while checking username', err);
+          if (msg) msg.textContent = 'Network error';
+        }
+      }
+
+      // Attach listener
+      newBtn.addEventListener('click', doCheck);
+      console.log('[DEBUG] click listener attached to checkBtn');
+
+      // Also allow Enter key on username to check immediately
+      if (input) {
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            doCheck();
+          }
+        });
+      }
+    });
+  })();
+  </script>
+
 </body>
 </html>
