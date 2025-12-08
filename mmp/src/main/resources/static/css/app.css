@@ -185,10 +185,18 @@ button {
   font-size: 13px;
 }
 
-.btn-primary {
-  background: linear-gradient(to right, #22c55e, #0ea5e9);
-  color: white;
+ 
+
+/* Make sure anchor does not get link-specific outline or underline */
+a.btn-primary:focus,
+button.btn-primary:focus {
+  outline: 3px solid rgba(14,165,233,.18);
+  outline-offset: 2px;
 }
+
+/* Keep hover/active consistent */
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(14,165,233,.14); }
+.btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
   background: rgba(15, 23, 42, 0.03);
