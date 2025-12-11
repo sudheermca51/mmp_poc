@@ -1,36 +1,228 @@
-<form th:action="@{/patient/profile}" th:object="${patientDto}" method="post" enctype="multipart/form-data">
-  <input type="hidden" th:field="*{id}" />
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Edit Profile - MMP</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+  <style>
+    /* Reuse the register page look & feel (keeps everything consistent) */
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-image: url('/images/app-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-  <div class="form-row">
-    <label>First Name</label>
-    <input type="text" th:field="*{firstName}" />
+    .center-layout {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 36px 18px;
+      box-sizing: border-box;
+    }
+
+    .card.login-card {
+      width: 100%;
+      max-width: 720px;
+      padding: 28px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #e8f3ff 0%, #ffffff 70%);
+      border: 1px solid rgba(14, 165, 233, 0.07);
+      box-shadow: 0 8px 30px rgba(12,35,63,0.06);
+      box-sizing: border-box;
+    }
+
+    .card.login-card h2 {
+      margin: 0 0 12px 0;
+      text-align: left;
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #22c55e, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .required-note {
+      font-size: 13px;
+      color: crimson;
+      margin: 6px 0 14px 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px 18px;
+      align-items: start;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 12px;
+    }
+
+    .form-row { display: flex; flex-direction: column; }
+    .form-row.full { grid-column: 1 / -1; }
+
+    .form-row label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #2b4250;
+      font-size: 13px;
+    }
+
+    .form-row input,
+    .form-row textarea,
+    .form-row select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 15px;
+      color: #0f172a;
+      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      border-color: #0ea5e9;
+      outline: none;
+      box-shadow: none;
+    }
+
+    /* readonly / disabled styling for username */
+    .form-row input[readonly], .form-row input[disabled] {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #e2e8f0;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit !important;
+      font-weight: 700 !important;
+      font-size: 14px !important;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(90deg,#22c55e,#0ea5e9);
+      box-shadow: 0 6px 18px rgba(14,165,233,.12);
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    @media (max-width:780px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    /* small helper to align single-column items */
+    .col-1 { grid-column: 1 / span 1; }
+    .col-2 { grid-column: 2 / span 1; }
+    .col-full { grid-column: 1 / -1; }
+
+  </style>
+</head>
+<body>
+  <div class="layout center-layout">
+    <div class="card login-card">
+
+      <h2>Edit Profile</h2>
+      <p class="required-note">Update the details below. Username is unique and cannot be changed.</p>
+
+      <form th:action="@{/patient/profile}" th:object="${patientDto}" method="post">
+        <input type="hidden"
+               th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+
+        <div class="form-grid">
+
+          <!-- Username on top (read-only & grayed-out) -->
+          <div class="form-row col-full">
+            <label for="username">Username</label>
+            <input id="username" type="text" th:field="*{username}" readonly />
+          </div>
+
+          <!-- First / Last name -->
+          <div class="form-row">
+            <label for="firstName">First Name</label>
+            <input id="firstName" type="text" th:field="*{firstName}" />
+          </div>
+
+          <div class="form-row">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" type="text" th:field="*{lastName}" />
+          </div>
+
+          <!-- Email / Phone -->
+          <div class="form-row">
+            <label for="email">Email</label>
+            <input id="email" type="email" th:field="*{email}" />
+          </div>
+
+          <div class="form-row">
+            <label for="phone">Phone</label>
+            <input id="phone" type="text" th:field="*{phone}" />
+          </div>
+
+          <!-- Gender / DOB -->
+          <div class="form-row">
+            <label for="gender">Gender</label>
+            <select id="gender" th:field="*{gender}">
+              <option value="">Select</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="dob">Date of Birth</label>
+            <input id="dob" type="date" th:field="*{dob}" />
+          </div>
+
+          <!-- Buttons -->
+          <div class="form-row col-full">
+            <div class="action-row">
+              <button class="btn-primary" type="submit">Save</button>
+              <a th:href="@{/patient/home}" class="btn-primary" style="background:linear-gradient(90deg,#94d4a6,#60c1e6);text-decoration:none;">Back</a>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
   </div>
-
-  <div class="form-row">
-    <label>Last Name</label>
-    <input type="text" th:field="*{lastName}" />
-  </div>
-
-  <div class="form-row">
-    <label>Username</label>
-    <input type="text" th:field="*{username}" />
-    <div th:if="${usernameError}" th:text="${usernameError}" class="error"></div>
-  </div>
-
-  <div class="form-row">
-    <label>Password (leave blank to keep current)</label>
-    <input type="password" th:field="*{password}" placeholder="Leave blank to keep current"/>
-    <div class="small">Leave blank if you don't want to change password</div>
-  </div>
-
-  <div class="form-row">
-    <label>Email</label>
-    <input type="email" th:field="*{email}" />
-  </div>
-
-  <div class="form-row">
-    <label>Phone</label>
-    <input type="text" th:field="*{phone}" />
-  </div>
-
-  <div c
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    (function(){
+      var success = /*[[${successMessage}]]*/ null;
+      if (success) {
+        alert(success);  // Popup appears when profile is saved
+      }
+    })();
+  /*]]>*/
+  </script>
+</body>
+</html>

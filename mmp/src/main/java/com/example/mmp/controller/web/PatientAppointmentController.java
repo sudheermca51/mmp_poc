@@ -82,7 +82,7 @@ public class PatientAppointmentController {
     public String createAppointment(HttpSession session,
                                     @RequestParam Long doctorId,
                                     @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                    @RequestParam String reason,
+                                    @RequestParam(required = false) String reason,
                                     RedirectAttributes redirectAttrs) {
 
         // Ensure patient logged in
@@ -91,15 +91,21 @@ public class PatientAppointmentController {
             return "redirect:/patient/login";
         }
 
+        // Validate doctorId presence (defensive)
+        if (doctorId == null) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Please choose a doctor.");
+            return "redirect:/patient/appointments/new";
+        }
+
         // Validate date presence
         if (date == null) {
-            redirectAttrs.addFlashAttribute("error", "Please select a date for the appointment.");
+            redirectAttrs.addFlashAttribute("errorMessage", "Please select a date for the appointment.");
             return "redirect:/patient/appointments/new";
         }
 
         // Date should not be in the past
         if (date.isBefore(LocalDate.now())) {
-            redirectAttrs.addFlashAttribute("error", "Selected date is in the past. Please choose a future date.");
+            redirectAttrs.addFlashAttribute("errorMessage", "Selected date is in the past. Please choose a future date.");
             return "redirect:/patient/appointments/new";
         }
 
@@ -107,10 +113,22 @@ public class PatientAppointmentController {
         Optional<Doctor> doctorOpt = doctorRepo.findById(doctorId);
         if (doctorOpt.isEmpty()) {
             logger.warn("Attempt to create appointment with invalid doctorId={}", doctorId);
-            redirectAttrs.addFlashAttribute("error", "Selected doctor not found. Please choose a valid doctor.");
+            redirectAttrs.addFlashAttribute("errorMessage", "Selected doctor not found. Please choose a valid doctor.");
             return "redirect:/patient/appointments/new";
         }
         Doctor doctor = doctorOpt.get();
+
+        // Validate reason (optional but trimmed and minimal length)
+        String reasonTrimmed = (reason == null) ? "" : reason.trim();
+        if (reasonTrimmed.isEmpty()) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Please provide a reason for the appointment.");
+            return "redirect:/patient/appointments/new";
+        }
+        // Optional: limit reason length
+        if (reasonTrimmed.length() > 1000) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Reason is too long (max 1000 characters).");
+            return "redirect:/patient/appointments/new";
+        }
 
         // Convert date -> LocalDateTime for persistence (start of day)
         LocalDateTime appointmentDateTime = date.atStartOfDay();
@@ -120,15 +138,23 @@ public class PatientAppointmentController {
         a.setPatient(patient);
         a.setDoctor(doctor);
         a.setAppointmentDateTime(appointmentDateTime);
-        a.setReason(reason);
+        a.setReason(reasonTrimmed);
         a.setStatus("SCHEDULED");
 
-        apptRepo.save(a);
+        try {
+            apptRepo.save(a);
+        } catch (Exception ex) {
+            logger.error("Failed to save appointment: patientId={}, doctorId={}, date={}, error={}",
+                    patient.getId(), doctor.getId(), date, ex.getMessage(), ex);
+            redirectAttrs.addFlashAttribute("errorMessage", "Failed to schedule appointment. Please try again later.");
+            return "redirect:/patient/appointments/new";
+        }
 
-        redirectAttrs.addFlashAttribute("success", "Appointment scheduled for " + date.toString());
+        redirectAttrs.addFlashAttribute("successMessage", "Appointment scheduled for " + date.toString());
         logger.info("Appointment created: patientId={}, doctorId={}, date={}", patient.getId(), doctor.getId(), date);
 
-        return "redirect:/patient/home";
+        // redirect to the appointments list so user can see the created appointment
+        return "redirect:/patient/appointments";
     }
 
     // Helper to resolve logged-in patient from session

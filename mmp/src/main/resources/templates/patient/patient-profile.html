@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Patient Profile</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body>
+  <div class="layout center-layout">
+    <div class="card">
+      <h2>Edit Profile</h2>
+
+      <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+      <form th:action="@{/patient/profile}" th:object="${patient}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <label>First Name</label>
+        <input type="text" th:field="*{firstName}" class="form-control"/>
+
+        <label>Last Name</label>
+        <input type="text" th:field="*{lastName}" class="form-control"/>
+
+        <label>Email</label>
+        <input type="email" th:field="*{email}" class="form-control"/>
+
+        <label>Phone</label>
+        <input type="text" th:field="*{phone}" class="form-control"/>
+
+        <label>Gender</label>
+        <select th:field="*{gender}" class="form-control">
+          <option value="">Select</option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+
+        <label>Date of Birth</label>
+        <input type="date" th:field="*{dob}" class="form-control"/>
+
+        <label>Username</label>
+        <input type="text" th:field="*{username}" readonly class="form-control"/>
+
+        <div class="mt-3">
+          <button type="submit" class="btn btn-success">Save</button>
+          <a th:href="@{/patient/home}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
