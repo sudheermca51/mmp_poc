@@ -28,9 +28,18 @@
     }
     .doctor-card .selected-badge { display:none; }
     .doctor-card.selected .selected-badge { display:block; }
+	.card h3 {
+					    margin: 0 0 12px 0;
+					    text-align: center;
+						font-size: 32px;
+							    font-weight: 800;
+					    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+					    -webkit-background-clip: text;
+					    -webkit-text-fill-color: transparent;
+				}
   </style>
 </head>
-
+ 
 <body>
 <div class="layout">
 
@@ -41,39 +50,79 @@
       <div class="subtitle">Patient Portal</div>
     </div>
 
-    <nav class="sidebar-nav">
-      <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
-        <span>Home</span>
-      </a>
+	<nav class="sidebar-nav">
+			  <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
+			    <!-- home SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+			    <span>Home</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" href="#" onclick="alert('Profile placeholder'); return false;">
-        <span>Profile</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" th:href="@{/patient/profile}">
+			    <!-- profile SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			      <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+			    <span>Profile</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments/new}">
-        <span>Schedule Appointment</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments/new}">
+			    <!-- calendar SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/>
+			      <path d="M16 3v4M8 3v4M3.5 10.5h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+			    </svg>
+			    <span>Schedule Appointment</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
-        <span>Information</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
+			    <!-- info SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+			      <path d="M12 8h.01M11 12h1.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+			    <span>Information</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
-        <span>Fees</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
+			    <!-- rupee SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <path d="M16 6H8a4 4 0 0 0 0 8h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			      <path d="M8 12h8M8 18h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+			    </svg>
+			    <span>Fees</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/patient/reports}">
-        <span>Reports</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/patient/reports}">
+			    <!-- report SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <rect x="4" y="3.5" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/>
+			      <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+			    </svg>
+			    <span>Reports</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}">
-        <span>Messages</span>
-      </a>
+			  <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}">
+			    <!-- message SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+			    <span>Messages</span>
+			  </a>
 
-      <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/patient/logout}">
-        <span>Logout</span>
-      </a>
-    </nav>
+			  <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/patient/logout}">
+			    <!-- logout SVG -->
+			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			      <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			      <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			      <path d="M21 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			    </svg>
+			    <span>Logout</span>
+			  </a>
+			</nav>
 
     <div class="sidebar-footer">Training build - Patient view</div>
   </aside>

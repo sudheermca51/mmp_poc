@@ -153,8 +153,7 @@ public class PatientAppointmentController {
         redirectAttrs.addFlashAttribute("successMessage", "Appointment scheduled for " + date.toString());
         logger.info("Appointment created: patientId={}, doctorId={}, date={}", patient.getId(), doctor.getId(), date);
 
-        // redirect to the appointments list so user can see the created appointment
-        return "redirect:/patient/appointments";
+        return "redirect:/patient/home";
     }
 
     // Helper to resolve logged-in patient from session

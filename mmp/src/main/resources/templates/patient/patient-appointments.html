@@ -4,6 +4,17 @@
   <meta charset="utf-8"/>
   <title>My Appointments</title>
   <link rel="stylesheet" th:href="@{/css/app.css}">
+  <style>
+	.table-title {
+	    font-size: 28px;
+	    font-weight: 800;
+	    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+	    -webkit-background-clip: text;
+	    -webkit-text-fill-color: transparent;
+	    margin-bottom: 12px;
+	}
+
+	</style>
 </head>
 <body>
 	<div class="layout">
@@ -92,7 +103,7 @@
 	    </aside>
     <main class="layout-main">
       <div class="card">
-        <h3>Appointments</h3>
+		<h3 class="table-title">Appointments</h3>
 
         <div style="margin-bottom:12px;">
           <a th:href="@{/patient/appointments/new}" class="btn-primary">Create new appointment</a>

@@ -1,228 +1,306 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <title>Edit Profile - MMP</title>
-  <link rel="stylesheet" th:href="@{/css/app.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
   <style>
-    /* Reuse the register page look & feel (keeps everything consistent) */
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
-      color: #0f172a;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      background-image: url('/images/app-bg.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .center-layout {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 36px 18px;
-      box-sizing: border-box;
-    }
-
-    .card.login-card {
-      width: 100%;
-      max-width: 720px;
-      padding: 28px;
-      border-radius: 16px;
-      background: linear-gradient(145deg, #e8f3ff 0%, #ffffff 70%);
-      border: 1px solid rgba(14, 165, 233, 0.07);
-      box-shadow: 0 8px 30px rgba(12,35,63,0.06);
-      box-sizing: border-box;
-    }
-
-    .card.login-card h2 {
-      margin: 0 0 12px 0;
-      text-align: left;
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #22c55e, #0ea5e9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .required-note {
-      font-size: 13px;
-      color: crimson;
-      margin: 6px 0 14px 0;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px 18px;
-      align-items: start;
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 12px;
-    }
-
-    .form-row { display: flex; flex-direction: column; }
+	body {
+	  margin: 0;
+	  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	  background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
+	  color: #0f172a;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	  background-image: url('/images/app-bg.jpg');
+	  background-size: cover;
+	  background-position: center;
+	  background-repeat: no-repeat;
+	}
+    /* Minimal page-specific styles only */
+     .card { background:#fff; border-radius:8px; padding:20px; box-shadow:0 6px 18px rgba(12,35,63,0.06); max-width:920px; }
+    .form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px 18px; }
+    .form-row { display:flex; flex-direction:column; }
     .form-row.full { grid-column: 1 / -1; }
-
-    .form-row label {
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #2b4250;
-      font-size: 13px;
-    }
-
-    .form-row input,
-    .form-row textarea,
-    .form-row select {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      font-size: 15px;
-      color: #0f172a;
-      transition: border-color 0.15s ease;
-      box-sizing: border-box;
-    }
-
-    .form-row input:focus,
-    .form-row textarea:focus,
-    .form-row select:focus {
-      border-color: #0ea5e9;
-      outline: none;
-      box-shadow: none;
-    }
-
-    /* readonly / disabled styling for username */
-    .form-row input[readonly], .form-row input[disabled] {
-      background: #f1f5f9;
-      color: #475569;
-      border-color: #e2e8f0;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: inherit !important;
-      font-weight: 700 !important;
-      font-size: 14px !important;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      color: #fff;
-      background: linear-gradient(90deg,#22c55e,#0ea5e9);
-      box-shadow: 0 6px 18px rgba(14,165,233,.12);
-    }
-
-    .action-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 14px;
-      width: 100%;
-    }
-
-    @media (max-width:780px) {
-      .form-grid { grid-template-columns: 1fr; }
-    }
-
-    /* small helper to align single-column items */
-    .col-1 { grid-column: 1 / span 1; }
-    .col-2 { grid-column: 2 / span 1; }
-    .col-full { grid-column: 1 / -1; }
-
-  </style>
+    label { font-weight:600; margin-bottom:6px; font-size:13px; color: #2b4250; }
+    .form-control { padding:8px 10px; border-radius:6px; border:1px solid #d1d5db; box-sizing:border-box; }
+    .form-control[readonly] { background:#f1f5f9; color:#475569; cursor:not-allowed; }
+    .actions { margin-top:16px; display:flex; gap:12px; }
+	.btn-primary,
+	a.btn-primary {
+	    padding: 10px 22px !important;
+	    border-radius: 999px !important;
+	    display: inline-flex !important;
+	    align-items: center !important;
+	    justify-content: center !important;
+	    font-weight: 700 !important;
+	    color: #fff;
+	    background: linear-gradient(90deg,#22c55e,#0ea5e9);
+	    text-decoration: none !important; /* important fix */
+	}
+    @media (max-width:780px) { .form-grid { grid-template-columns: 1fr; } .layout > .sidebar { display:none; } }
+	/* Heading with gradient text */
+	.card h2 {
+		    margin: 0 0 12px 0;
+		    text-align: center;
+		    font-size: 32px;
+		    font-weight: 800;
+		    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+		    -webkit-background-clip: text;
+		    -webkit-text-fill-color: transparent;
+	}
+	.actions {
+	    display: flex !important;
+	    justify-content: center !important;
+	    align-items: center !important;
+	    gap: 12px;
+	}
+	.required-note {
+		font-weight: 700 !important;
+	     font-size: 13px;
+	     color: crimson;
+	     margin: 6px 0 14px 0;
+	   }
+	   .req {
+	       color: #e11d48;
+	       font-weight: 700;
+	       margin-left: 4px;
+	     }
+	</style>
 </head>
 <body>
-  <div class="layout center-layout">
-    <div class="card login-card">
+  <div class="layout">
 
-      <h2>Edit Profile</h2>
-      <p class="required-note">Update the details below. Username is unique and cannot be changed.</p>
+    <!-- Sidebar (inline, same structure as patient-home.html) -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">MMP</div>
+        <div class="subtitle">Patient Portal</div>
+      </div>
 
-      <form th:action="@{/patient/profile}" th:object="${patientDto}" method="post">
-        <input type="hidden"
-               th:if="${_csrf != null}"
-               th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}" />
+      <nav class="sidebar-nav">
+        <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Home</span>
+        </a>
 
-        <div class="form-grid">
+        <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" th:href="@{/patient/profile}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Profile</span>
+        </a>
 
-          <!-- Username on top (read-only & grayed-out) -->
-          <div class="form-row col-full">
-            <label for="username">Username</label>
-            <input id="username" type="text" th:field="*{username}" readonly />
-          </div>
+        <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments/new}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M16 3v4M8 3v4M3.5 10.5h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span>Schedule Appointment</span>
+        </a>
 
-          <!-- First / Last name -->
-          <div class="form-row">
-            <label for="firstName">First Name</label>
-            <input id="firstName" type="text" th:field="*{firstName}" />
-          </div>
+        <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M12 8h.01M11 12h1.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Information</span>
+        </a>
 
-          <div class="form-row">
-            <label for="lastName">Last Name</label>
-            <input id="lastName" type="text" th:field="*{lastName}" />
-          </div>
+        <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M16 6H8a4 4 0 0 0 0 8h8" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 12h8M8 18h8" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Fees</span>
+        </a>
 
-          <!-- Email / Phone -->
-          <div class="form-row">
-            <label for="email">Email</label>
-            <input id="email" type="email" th:field="*{email}" />
-          </div>
+        <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/patient/reports}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="3.5" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Reports</span>
+        </a>
 
-          <div class="form-row">
-            <label for="phone">Phone</label>
-            <input id="phone" type="text" th:field="*{phone}" />
-          </div>
+        <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Messages</span>
+        </a>
 
-          <!-- Gender / DOB -->
-          <div class="form-row">
-            <label for="gender">Gender</label>
-            <select id="gender" th:field="*{gender}">
-              <option value="">Select</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-              <option value="OTHER">Other</option>
-            </select>
-          </div>
+        <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/patient/logout}">
+          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M21 12H9" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span>Logout</span>
+        </a>
+      </nav>
 
-          <div class="form-row">
-            <label for="dob">Date of Birth</label>
-            <input id="dob" type="date" th:field="*{dob}" />
-          </div>
+      <div class="sidebar-footer">Training build - Patient view</div>
+    </aside>
 
-          <!-- Buttons -->
-          <div class="form-row col-full">
-            <div class="action-row">
-              <button class="btn-primary" type="submit">Save</button>
-              <a th:href="@{/patient/home}" class="btn-primary" style="background:linear-gradient(90deg,#94d4a6,#60c1e6);text-decoration:none;">Back</a>
+    <!-- Main content -->
+    <main class="layout-main">
+      <div class="card">
+        <h2>Edit Profile</h2>
+		<p class="required-note">Please update the details below. Note that the username is unique and cannot be modified.</p>
+
+        <form th:action="@{/patient/profile}" th:object="${patientDto}" method="post">
+          <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+          <div class="form-grid">
+            <div class="form-row full">
+              <label for="username">Username <span class="req">*</span></label>
+              <input id="username" type="text" th:field="*{username}" readonly class="form-control" />
+            </div>
+
+            <div class="form-row">
+              <label for="firstName">First Name <span class="req">*</span></label>
+              <input id="firstName" type="text" th:field="*{firstName}" class="form-control" />
+            </div>
+
+            <div class="form-row">
+              <label for="lastName">Last Name <span class="req">*</span></label>
+              <input id="lastName" type="text" th:field="*{lastName}" class="form-control" />
+            </div>
+
+            <div class="form-row">
+              <label for="email">Email <span class="req">*</span></label>
+              <input id="email" type="email" th:field="*{email}" class="form-control" />
+            </div>
+
+            <div class="form-row">
+              <label for="phone">Phone <span class="req">*</span></label>
+              <input id="phone" type="text" th:field="*{phone}" class="form-control" />
+            </div>
+
+            <div class="form-row">
+              <label for="gender">Gender <span class="req">*</span></label>
+              <select id="gender" th:field="*{gender}" class="form-control">
+                <option value="">Select</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="dob">Date of Birth <span class="req">*</span></label>
+              <input id="dob" type="date" th:field="*{dob}" class="form-control" />
             </div>
           </div>
 
-        </div>
-      </form>
-
-    </div>
+          <div class="actions">
+            <button type="submit" class="btn-primary">Save</button>
+            <a th:href="@{/patient/home}" class="btn-primary">Back</a>
+          </div>
+        </form>
+      </div>
+    </main>
   </div>
-  <script th:inline="javascript">
+
+  <!-- show success alert only when server provided successMessage -->
+  <script th:if="${successMessage}" th:inline="javascript">
   /*<![CDATA[*/
-    (function(){
-      var success = /*[[${successMessage}]]*/ null;
-      if (success) {
-        alert(success);  // Popup appears when profile is saved
-      }
-    })();
+    alert(/*[[${successMessage}]]*/'');
   /*]]>*/
   </script>
+  <style>
+    /* tiny visual for invalid fields */
+    .is-invalid {
+      border-color: #e11d48 !important;
+      box-shadow: 0 0 0 4px rgba(225,29,72,0.06) !important;
+    }
+  </style>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // pick the form (page has a single profile form)
+    const form = document.querySelector('form[th\\:action], form[action*="/patient/profile"], form');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      // list of required fields to validate (selector, friendly name)
+      const requiredFields = [
+        { sel: '#firstName', name: 'First Name' },
+        { sel: '#lastName',  name: 'Last Name' },
+        { sel: '#email',     name: 'Email' },
+        { sel: '#phone',     name: 'Phone' },
+        { sel: '#gender',    name: 'Gender' },
+        { sel: '#dob',       name: 'Date of Birth' }
+      ];
+
+      // clear previous error markers
+      requiredFields.forEach(f => {
+        const el = document.querySelector(f.sel);
+        if (el) el.classList.remove('is-invalid');
+      });
+
+      const errors = [];
+      let firstInvalid = null;
+
+      requiredFields.forEach(f => {
+        const el = document.querySelector(f.sel);
+        if (!el) return; // missing element -- skip
+
+        // get the value; for selects use value; for inputs trim whitespace
+        const val = (el.value || '').toString().trim();
+
+        // special: date input uses empty string when not set
+        if (!val) {
+          errors.push(f.name);
+          if (!firstInvalid) firstInvalid = el;
+          el.classList.add('is-invalid');
+        } else {
+          // additional simple checks
+          if (f.sel === '#email') {
+            // basic email pattern (lightweight)
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!re.test(val)) {
+              errors.push('Valid Email');
+              if (!firstInvalid) firstInvalid = el;
+              el.classList.add('is-invalid');
+            }
+          }
+          if (f.sel === '#phone') {
+            // basic phone check: at least 7 digits (allowing + and spaces)
+            const digits = val.replace(/\D/g,'');
+            if (digits.length < 7) {
+              errors.push('Valid Phone number');
+              if (!firstInvalid) firstInvalid = el;
+              el.classList.add('is-invalid');
+            }
+          }
+        }
+      });
+
+      if (errors.length > 0) {
+        e.preventDefault();
+
+        // build message and show user-friendly alert
+        const unique = Array.from(new Set(errors)); // dedupe
+        const msg = 'Please provide: ' + unique.join(', ');
+        // move viewport to first invalid field
+        if (firstInvalid && typeof firstInvalid.focus === 'function') {
+          firstInvalid.focus({ preventScroll: false });
+          try { firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
+        }
+        alert(msg);
+        return false;
+      }
+
+      // allow submit when no errors
+    });
+  });
+  </script>
+
 </body>
 </html>

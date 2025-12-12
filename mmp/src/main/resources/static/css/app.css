@@ -5,7 +5,18 @@ body {
   background: #f3f4f6;
   color: #111827;
 }
-
+.btn-primary,
+	a.btn-primary {
+	    padding: 10px 22px !important;
+	    border-radius: 999px !important;
+	    display: inline-flex !important;
+	    align-items: center !important;
+	    justify-content: center !important;
+	    font-weight: 700 !important;
+	    color: #fff;
+	    background: linear-gradient(90deg,#22c55e,#0ea5e9);
+	    text-decoration: none !important; /* important fix */
+	}
 .layout {
   display: flex;
   min-height: 100vh;
@@ -208,6 +219,7 @@ button.btn-primary:focus {
   background: transparent;
   color: #4b5563;
 }
+
 
 .subtext {
   font-size: 12px;

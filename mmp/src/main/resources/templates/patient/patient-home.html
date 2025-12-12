@@ -3,6 +3,36 @@
 <head>
     <title>Patient Portal - MMP</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<style>
+		.card h2 {
+				    margin: 0 0 12px 0;
+				    text-align: center;
+				    font-size: 28px;
+				    font-weight: 800;
+				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+				    -webkit-background-clip: text;
+				    -webkit-text-fill-color: transparent;
+			}
+			/* Force gradient on table header */
+			.table-styled thead th {
+			    background: linear-gradient(90deg, #4f46e5, #9333ea) !important;
+			    color: #fff !important;
+			    font-weight: 700;
+			    padding: 12px;
+			    font-size: 14px;
+			    text-transform: uppercase;
+			}
+
+			/* Optional rounded corners */
+			.table-styled thead th:first-child {
+			    border-top-left-radius: 12px !important;
+			}
+			.table-styled thead th:last-child {
+			    border-top-right-radius: 12px !important;
+			}
+
+
+	</style>
 </head>
 <body>
 <div class="layout">
@@ -133,8 +163,8 @@
             </div>
         </div>
 
-        <div class="table-card">
-            <h3>Appointments</h3>
+        <div class="card">
+           <h2>Appointments</h2>
             <table class="table-styled">
                 <thead>
                 <tr>

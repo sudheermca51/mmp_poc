@@ -186,6 +186,17 @@ public class PatientPortalController {
 
 	 // ------------------- EDIT PROFILE ----------------------
 
+	
+	// inside PatientPortalController (or another controller annotated with @Controller)
+	@GetMapping("/patient-profile-inline")
+	public String patientProfileInline(Model model) {
+	    // (optional) provide activeMenu so sidebar fragment can highlight, if used
+	    model.addAttribute("activeMenu", "profile");
+	    // view name: src/main/resources/templates/patient/patient-profile-inline.html
+	    return "patient/patient-profile-inline";
+	}
+
+	
     @GetMapping("/profile")
     public String showProfile(Model model, HttpSession session) {
         String username = resolveUsername(session);

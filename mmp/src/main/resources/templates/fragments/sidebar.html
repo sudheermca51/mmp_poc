@@ -1,43 +1,48 @@
-<!doctype html>
+<!-- fragments/sidebar.html -->
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"/></head>
-<body>
-  <!-- fragment name: sidebar
-       Accepts parameters: activeMenu, patient -->
-  <div th:fragment="sidebar (activeMenu, patient)">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">MMP</div>
-        <div class="subtitle">Patient Portal</div>
+  <body>
+    <!-- fragment: patientSidebar(activeMenu) - root element is the <aside> so .layout > .sidebar matches -->
+    <aside th:fragment="patientSidebar(activeMenu)" class="sidebar">
+      <!-- DEBUG_MARKER:sidebar -->
+      <div class="sidebar-header" style="padding:16px 14px;">
+        <div class="logo" style="font-weight:800;font-size:18px;color:#0ea5e9">MMP</div>
+        <div class="subtitle" style="font-size:13px;color:#94a3b8">Patient Portal</div>
       </div>
 
-      <nav class="sidebar-nav">
-        <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
-          <!-- home icon -->
-          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6"/></svg>
+      <nav class="sidebar-nav" style="display:flex;flex-direction:column;gap:6px;padding:8px 12px;">
+        <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
           <span>Home</span>
         </a>
 
-        <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments/new}">
-          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
-          <span>Schedule Appointment</span>
+        <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" th:href="@{/patient/profile}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
+          <span>Profile</span>
         </a>
 
-        <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}">
-          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6"/></svg>
+        <a th:classappend="${activeMenu}=='schedule' ? ' active' : ''" th:href="@{/patient/appointments}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
+          <span>Schedule</span>
+        </a>
+
+        <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
+          <span>Fees</span>
+        </a>
+
+        <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/patient/reports}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
+          <span>Reports</span>
+        </a>
+
+        <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/patient/messages}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;">
           <span>Messages</span>
         </a>
 
-        <a th:href="@{/patient/logout}">
-          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6"/></svg>
+        <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/patient/logout}" style="padding:10px;border-radius:8px;text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;margin-top:8px;">
           <span>Logout</span>
         </a>
       </nav>
 
-      <div class="sidebar-footer">
-        Training build - Patient view
+      <div class="sidebar-footer" style="margin-top:18px;padding-left:14px;color:#94a3b8;font-size:13px;">
+          Training build - Patient view
       </div>
     </aside>
-  </div>
-</body>
+  </body>
 </html>
