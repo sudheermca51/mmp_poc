@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Messages Inbox</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+	<aside class="sidebar admin-sidebar">
+	      <div class="sidebar-header">
+	          <div class="logo">MMP</div>
+	          <div class="subtitle">Admin Portal</div>
+	      </div>
+	      <nav class="sidebar-nav">
+	          <a th:href="@{/admin/home}">HOME</a>
+	          <a th:href="@{/admin/patients}">Patients</a>
+	          <a th:href="@{/admin/claim-center}">Claim Center</a>
+	          <a th:href="@{/admin/reports}">Reports</a>
+	          <a class="active" th:href="@{/admin/messages}">Messages</a>
+	          <a th:href="@{/admin/logout}">Logout</a>
+	      </nav>
+	  </aside>
+
+    <main class="layout-main">
+        <div class="card">
+            <h2>Messages Inbox</h2>
+
+            <table class="table-styled">
+                <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Last Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${patients}">
+                    <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
+
+                    <td th:text="${@messageRepository
+                        .findTopByPatientOrderByCreatedAtDesc(p).text}">
+                    </td>
+
+                    <td>
+                        <span th:text="${@messageRepository
+                            .findTopByPatientOrderByCreatedAtDesc(p).status}"
+                              th:classappend="
+                                ${@messageRepository
+                                    .findTopByPatientOrderByCreatedAtDesc(p).status == 'OPEN'} ? 'status-open' :
+                                (${@messageRepository
+                                    .findTopByPatientOrderByCreatedAtDesc(p).status == 'IN_PROGRESS'} ? 'status-progress' :
+                                'status-closed')">
+                        </span>
+                    </td>
+
+                    <td>
+                        <a class="btn-secondary"
+                           th:href="@{/admin/messages/{id}(id=${p.id})}">
+                            View
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

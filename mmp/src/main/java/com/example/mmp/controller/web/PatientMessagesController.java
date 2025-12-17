@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -24,10 +25,21 @@ public class PatientMessagesController {
     }
 
     private Patient getLoggedPatient(HttpSession session) {
-        Object idObj = session.getAttribute("patientId");
-        if (idObj == null) return null;
-        Long id = (Long) idObj;
-        return patientRepo.findById(id).orElse(null);
+        Object obj = session.getAttribute("loggedInUser");
+        if (obj == null) return null;
+
+        // If you already stored the Patient object
+        if (obj instanceof Patient) {
+            return (Patient) obj;
+        }
+
+        // If you stored username string (recommended)
+        if (obj instanceof String) {
+            String username = ((String) obj).trim();
+            return patientRepo.findByUsername(username).orElse(null);
+        }
+
+        return null;
     }
 
     @GetMapping
@@ -41,15 +53,26 @@ public class PatientMessagesController {
     }
 
     @PostMapping
-    public String send(@RequestParam String text, HttpSession session) {
+    public String send(@RequestParam String text,
+                       HttpSession session,
+                       RedirectAttributes redirectAttributes) {
+
         Patient p = getLoggedPatient(session);
         if (p == null) return "redirect:/patient/login";
+
         Message m = new Message();
         m.setPatient(p);
         m.setSenderRole("PATIENT");
         m.setText(text);
         m.setStatus("OPEN");
         messageRepo.save(m);
+
+        redirectAttributes.addFlashAttribute(
+            "successMessage", "Message sent successfully"
+        );
+
         return "redirect:/patient/messages";
     }
+
+    
 }

@@ -3,7 +3,10 @@
 <head>
     <title>Admin - Patients</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<link rel="stylesheet" th:href="@{/css/admin.css}">
+ 
 </head>
+
 <body>
 <div class="layout">
     <aside class="sidebar admin-sidebar">
@@ -23,49 +26,71 @@
 
     <main class="layout-main">
         <div class="card header-card">
-            <div>
-                <h2>Patients</h2>
-                <p>Approve or reject patients. Only approved patients can login.</p>
-            </div>
-            <div>
-                <form th:action="@{/admin/patients}" method="get">
-                    <label>Search</label>
-                    <input type="text" name="q" th:value="${query}" placeholder="Name or email">
-                    <button class="btn-secondary" type="submit">Search</button>
-                </form>
-            </div>
+            <h2>Patients</h2>
+            <p>Approve or reject patients. Only approved patients can login.</p>
         </div>
 
-        <div class="card">
-            <table>
+        <!-- FILTER CHIPS -->
+        <div class="filter-chips">
+            <a th:href="@{/admin/patients}" class="chip">All</a>
+            <a th:href="@{/admin/patients(status='approved')}" class="chip approved">Approved</a>
+            <a th:href="@{/admin/patients(status='rejected')}" class="chip rejected">Rejected</a>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div th:if="${patients.isEmpty()}" class="empty-state">
+            <h3>No patients found</h3>
+            <p>Try adjusting your filters.</p>
+        </div>
+
+        <!-- TABLE -->
+        <div th:if="${!patients.isEmpty()}" class="card patients-card">
+            <table class="patients-table">
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Name</th>
+                    <th>Username <span class="sort-arrows">▲▼</span></th>
+                    <th>Full Name <span class="sort-arrows">▲▼</span></th>
                     <th>Email</th>
-                    <th>Approved</th>
-                    <th>Actions</th>
+                    <th>Status</th>
+                    <th class="actions-col">Actions</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="p : ${patients}">
                     <td th:text="${p.id}"></td>
                     <td th:text="${p.username}"></td>
                     <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
                     <td th:text="${p.email}"></td>
-                    <td th:text="${p.approved}"></td>
+
                     <td>
-                        <form th:action="@{'/admin/patients/' + ${p.id} + '/approve'}" method="post" style="display:inline;">
-                            <button class="btn-secondary" type="submit">Approve</button>
+                        <span th:if="${p.approved}" class="status-pill approved">Approved</span>
+                        <span th:if="${p.rejected}" class="status-pill rejected">Rejected</span>
+                    </td>
+
+                    <td class="actions-col">
+                        <form th:action="@{/admin/patients/{id}/approve(id=${p.id})}" method="post">
+                            <button class="btn-secondary" th:disabled="${p.approved}">Approve</button>
                         </form>
-                        <form th:action="@{'/admin/patients/' + ${p.id} + '/reject'}" method="post" style="display:inline;">
-                            <button class="btn-secondary" type="submit">Reject</button>
+                        <form th:action="@{/admin/patients/{id}/reject(id=${p.id})}" method="post">
+                            <button class="btn-danger" th:disabled="${p.rejected}">Reject</button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <!-- PAGINATION -->
+            <div class="pagination-footer">
+                <span>Showing results</span>
+                <div class="pagination-controls">
+                    <button disabled>Prev</button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>Next</button>
+                </div>
+            </div>
         </div>
     </main>
 </div>

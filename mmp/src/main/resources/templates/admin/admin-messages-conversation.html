@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Conversation</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+	<aside class="sidebar admin-sidebar">
+	      <div class="sidebar-header">
+	          <div class="logo">MMP</div>
+	          <div class="subtitle">Admin Portal</div>
+	      </div>
+	      <nav class="sidebar-nav">
+	          <a th:href="@{/admin/home}">HOME</a>
+	          <a th:href="@{/admin/patients}">Patients</a>
+	          <a th:href="@{/admin/claim-center}">Claim Center</a>
+	          <a th:href="@{/admin/reports}">Reports</a>
+	          <a class="active" th:href="@{/admin/messages}">Messages</a>
+	          <a th:href="@{/admin/logout}">Logout</a>
+	      </nav>
+	  </aside>
+    <main class="layout-main">
+        <div class="card">
+            <h2 th:text="${patient.firstName} + ' ' + ${patient.lastName}"></h2>
+
+            <!-- CLOSE TICKET -->
+            <form method="post" th:action="@{/admin/messages/close}"
+                  style="text-align:right;">
+                <input type="hidden" name="patientId" th:value="${patient.id}">
+				<button class="btn-danger"
+				        th:disabled="${messages.?[status!='CLOSED'].isEmpty()}"
+				        onclick="return confirm('Close this conversation?');">
+				    Close Ticket
+				</button>
+
+            </form>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>From</th>
+                    <th>Text</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${messages}">
+                    <td th:text="${#temporals.format(m.createdAt,'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${m.senderRole}"></td>
+                    <td th:text="${m.text}"></td>
+                    <td th:text="${m.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- REPLY -->
+            <form method="post" th:action="@{/admin/messages/reply}">
+                <input type="hidden" name="patientId" th:value="${patient.id}">
+                <input type="text" name="text"
+                       placeholder="Reply..."
+                       th:disabled="${#lists.contains(messages.?[status=='CLOSED'], true)}">
+                <button class="btn-secondary"
+                        th:disabled="${#lists.contains(messages.?[status=='CLOSED'], true)}">
+                    Send
+                </button>
+            </form>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -18,7 +18,8 @@ public class AdminMessagesController {
     private final MessageRepository messageRepo;
     private final PatientRepository patientRepo;
 
-    public AdminMessagesController(MessageRepository messageRepo, PatientRepository patientRepo) {
+    public AdminMessagesController(MessageRepository messageRepo,
+                                   PatientRepository patientRepo) {
         this.messageRepo = messageRepo;
         this.patientRepo = patientRepo;
     }
@@ -27,27 +28,89 @@ public class AdminMessagesController {
         return session.getAttribute("adminId") != null;
     }
 
+    /* ================= INBOX ================= */
+
     @GetMapping
-    public String messages(Model model, HttpSession session) {
+    public String inbox(Model model, HttpSession session) {
         if (!isLogged(session)) return "redirect:/admin/login";
-        List<Message> messages = messageRepo.findAllByOrderByCreatedAtDesc();
-        model.addAttribute("messages", messages);
-        return "admin/admin-messages";
+
+        model.addAttribute("patients", messageRepo.findDistinctPatients());
+        return "admin/admin-messages-inbox";
     }
+
+    /* ================= CONVERSATION ================= */
+
+    @GetMapping("/{patientId}")
+    public String conversation(@PathVariable Long patientId,
+                               Model model,
+                               HttpSession session) {
+
+        if (!isLogged(session)) return "redirect:/admin/login";
+
+        Patient patient = patientRepo.findById(patientId).orElse(null);
+        if (patient == null) return "redirect:/admin/messages";
+
+        List<Message> messages =
+                messageRepo.findByPatientOrderByCreatedAtDesc(patient);
+
+        model.addAttribute("patient", patient);
+        model.addAttribute("messages", messages);
+
+        return "admin/admin-messages-conversation";
+    }
+
+    /* ================= REPLY ================= */
 
     @PostMapping("/reply")
     public String reply(@RequestParam Long patientId,
                         @RequestParam String text,
                         HttpSession session) {
+
         if (!isLogged(session)) return "redirect:/admin/login";
-        Patient p = patientRepo.findById(patientId).orElse(null);
-        if (p == null) return "redirect:/admin/messages";
-        Message m = new Message();
-        m.setPatient(p);
-        m.setSenderRole("ADMIN");
-        m.setText(text);
-        m.setStatus("OPEN");
-        messageRepo.save(m);
-        return "redirect:/admin/messages";
+
+        Patient patient = patientRepo.findById(patientId).orElse(null);
+        if (patient == null) return "redirect:/admin/messages";
+
+        // Move OPEN → IN_PROGRESS
+        List<Message> openMessages =
+                messageRepo.findByPatientAndStatus(patient, "OPEN");
+
+        for (Message m : openMessages) {
+            m.setStatus("IN_PROGRESS");
+        }
+        messageRepo.saveAll(openMessages);
+
+        Message reply = new Message();
+        reply.setPatient(patient);
+        reply.setSenderRole("ADMIN");
+        reply.setText(text);
+        reply.setStatus("IN_PROGRESS");
+        messageRepo.save(reply);
+
+        return "redirect:/admin/messages/" + patientId;
+    }
+
+    /* ================= CLOSE TICKET (FINAL FIX) ================= */
+
+    @PostMapping("/close")
+    public String close(@RequestParam Long patientId,
+                        HttpSession session) {
+
+        if (!isLogged(session)) return "redirect:/admin/login";
+
+        Patient patient = patientRepo.findById(patientId).orElse(null);
+        if (patient == null) return "redirect:/admin/messages";
+
+        List<Message> messages =
+                messageRepo.findByPatientOrderByCreatedAtDesc(patient);
+
+        for (Message m : messages) {
+            m.setStatus("CLOSED");
+        }
+
+        // 🔥 THIS WAS THE MISSING PIECE
+        messageRepo.saveAll(messages);
+
+        return "redirect:/admin/messages/" + patientId;
     }
 }

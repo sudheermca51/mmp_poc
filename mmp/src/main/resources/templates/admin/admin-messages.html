@@ -20,10 +20,25 @@
             <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+
     <main class="layout-main">
         <div class="card header-card">
             <h2>Messages Inbox</h2>
         </div>
+
+        <!-- ✅ ONE CLOSE BUTTON PER CONVERSATION -->
+        <div class="card" style="text-align:right;">
+            <form method="post" th:action="@{/admin/messages/close}">
+                <input type="hidden"
+                       name="patientId"
+                       th:value="${messages[0].patient.id}">
+                <button class="btn-danger"
+                        onclick="return confirm('Close entire conversation?');">
+                    Close Ticket
+                </button>
+            </form>
+        </div>
+
         <div class="card">
             <table>
                 <thead>
@@ -32,20 +47,43 @@
                     <th>Patient</th>
                     <th>From</th>
                     <th>Text</th>
+                    <th>Status</th>
                     <th>Reply</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="m : ${messages}">
                     <td th:text="${#temporals.format(m.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+
                     <td th:text="${m.patient.firstName} + ' ' + ${m.patient.lastName}"></td>
+
                     <td th:text="${m.senderRole}"></td>
+
                     <td th:text="${m.text}"></td>
+
+                    <!-- STATUS -->
+                    <td>
+                        <span th:text="${m.status}"
+                              th:classappend="
+                                ${m.status=='OPEN'} ? 'status-open' :
+                                (${m.status=='IN_PROGRESS'} ? 'status-progress' :
+                                'status-closed')">
+                        </span>
+                    </td>
+
+                    <!-- REPLY -->
                     <td>
                         <form method="post" th:action="@{/admin/messages/reply}">
                             <input type="hidden" name="patientId" th:value="${m.patient.id}">
-                            <input type="text" name="text" placeholder="Reply...">
-                            <button class="btn-secondary" type="submit">Send</button>
+                            <input type="text"
+                                   name="text"
+                                   placeholder="Reply..."
+                                   th:disabled="${m.status == 'CLOSED'}">
+                            <button class="btn-secondary"
+                                    type="submit"
+                                    th:disabled="${m.status == 'CLOSED'}">
+                                Send
+                            </button>
                         </form>
                     </td>
                 </tr>

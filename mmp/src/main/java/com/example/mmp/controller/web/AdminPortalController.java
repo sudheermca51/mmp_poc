@@ -89,17 +89,33 @@ public class AdminPortalController {
         return "admin/admin-patients";
     }
 
+    /* ================= APPROVE PATIENT (UPDATED) ================= */
+
     @PostMapping("/patients/{id}/approve")
     public String approvePatient(@PathVariable Long id, HttpSession session) {
         if (!isLogged(session)) return "redirect:/admin/login";
-        patientRepo.findById(id).ifPresent(p -> { p.setApproved(true); patientRepo.save(p); });
+
+        patientRepo.findById(id).ifPresent(p -> {
+            p.setApproved(true);
+            p.setRejected(false);   // ✅ ensure consistency
+            patientRepo.save(p);
+        });
+
         return "redirect:/admin/patients";
     }
+
+    /* ================= REJECT PATIENT (UPDATED) ================= */
 
     @PostMapping("/patients/{id}/reject")
     public String rejectPatient(@PathVariable Long id, HttpSession session) {
         if (!isLogged(session)) return "redirect:/admin/login";
-        patientRepo.findById(id).ifPresent(p -> { p.setApproved(false); patientRepo.save(p); });
+
+        patientRepo.findById(id).ifPresent(p -> {
+            p.setApproved(false);
+            p.setRejected(true);    // ✅ ensure consistency
+            patientRepo.save(p);
+        });
+
         return "redirect:/admin/patients";
     }
 

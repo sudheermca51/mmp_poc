@@ -76,7 +76,7 @@ public class PatientPortalController {
 			return "patient/patient-login";
 		}
 
-		if (!Boolean.TRUE.equals(p.isApproved())) {
+		if (!Boolean.TRUE.equals(p.getApproved())) {
 			model.addAttribute("error", "Your account is not yet approved by admin");
 			return "patient/patient-login";
 		}
@@ -105,7 +105,6 @@ public class PatientPortalController {
 		session.setAttribute("loggedInUser", p.getUsername());
 	 	return "redirect:/patient/home";
 	}
-
 
 	@GetMapping("/register")
 	public String registerForm() {
