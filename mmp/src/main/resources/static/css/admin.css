@@ -126,3 +126,25 @@
         padding: 60px;
         color: #64748b;
     }
+	/* Disabled button styling */
+	button:disabled,
+	button[disabled] {
+	    opacity: 0.5;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	    pointer-events: none;
+	}
+
+	/* Disabled approve button – approved look */
+	.btn-secondary:disabled {
+	    background-color: #dcfce7;   /* light green */
+	    color: #166534;              /* dark green text */
+	    border: 1px solid #86efac;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	}
+
+	/* Kill hover effect explicitly */
+	.btn-secondary:disabled:hover {
+	    background-color: #dcfce7;
+	}

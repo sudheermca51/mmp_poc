@@ -3,8 +3,7 @@
 <head>
     <title>Admin - Patients</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
-	<link rel="stylesheet" th:href="@{/css/admin.css}">
- 
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 
 <body>
@@ -48,18 +47,46 @@
             <table class="patients-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Username <span class="sort-arrows">▲▼</span></th>
-                    <th>Full Name <span class="sort-arrows">▲▼</span></th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th class="actions-col">Actions</th>
+                    <!-- USERNAME SORT -->
+                    <th>
+                        <a th:href="@{/admin/patients(
+                            page=0,
+                            sortField='username',
+                            sortDir=${reverseSortDir},
+                            status=${status}
+                        )}">
+                            USERNAME
+                            <span th:if="${sortField == 'username'}">
+                                <span th:if="${sortDir == 'asc'}">▲</span>
+                                <span th:if="${sortDir == 'desc'}">▼</span>
+                            </span>
+                        </a>
+                    </th>
+
+                    <!-- FULL NAME SORT -->
+                    <th>
+                        <a th:href="@{/admin/patients(
+                            page=0,
+                            sortField='firstName',
+                            sortDir=${reverseSortDir},
+                            status=${status}
+                        )}">
+                            FULL NAME
+                            <span th:if="${sortField == 'firstName'}">
+                                <span th:if="${sortDir == 'asc'}">▲</span>
+                                <span th:if="${sortDir == 'desc'}">▼</span>
+                            </span>
+                        </a>
+                    </th>
+
+                    <th>EMAIL</th>
+                    <th>STATUS</th>
+                    <th class="actions-col">ACTIONS</th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr th:each="p : ${patients}">
-                    <td th:text="${p.id}"></td>
                     <td th:text="${p.username}"></td>
                     <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
                     <td th:text="${p.email}"></td>
@@ -83,12 +110,42 @@
 
             <!-- PAGINATION -->
             <div class="pagination-footer">
-                <span>Showing results</span>
+                <span>
+                    Page <b th:text="${currentPage + 1}"></b>
+                    of <b th:text="${totalPages}"></b>
+                </span>
+
                 <div class="pagination-controls">
-                    <button disabled>Prev</button>
-                    <button class="active">1</button>
-                    <button>2</button>
-                    <button>Next</button>
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/patients(
+                            page=${currentPage - 1},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}">
+                        Prev
+                    </a>
+
+                    <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                       th:classappend="${i == currentPage} ? 'active'"
+                       th:href="@{/admin/patients(
+                            page=${i},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}"
+                       th:text="${i + 1}">
+                    </a>
+
+                    <a th:if="${currentPage + 1 < totalPages}"
+                       th:href="@{/admin/patients(
+                            page=${currentPage + 1},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}">
+                        Next
+                    </a>
                 </div>
             </div>
         </div>
