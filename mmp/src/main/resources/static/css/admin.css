@@ -148,3 +148,63 @@
 	.btn-secondary:disabled:hover {
 	    background-color: #dcfce7;
 	}
+	/* Pagination container */
+	.pagination-footer {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    margin-top: 16px;
+	    padding-top: 12px;
+	    border-top: 1px solid #e5e7eb;
+	}
+
+	/* Page buttons */
+	.pagination-controls {
+	    display: flex;
+	    gap: 6px;
+	}
+
+	.page-btn {
+	    padding: 6px 12px;
+	    border-radius: 6px;
+	    border: 1px solid #d1d5db;
+	    text-decoration: none;
+	    font-size: 14px;
+	    color: #1f2937;
+	    background-color: #ffffff;
+	    transition: all 0.15s ease;
+	}
+
+	/* Hover */
+	.page-btn:hover {
+	    background-color: #f3f4f6;
+	}
+
+	/* Active page */
+	.page-btn.active {
+	    background-color: #2563eb;
+	    color: #ffffff;
+	    border-color: #2563eb;
+	    font-weight: 600;
+	}
+
+	/* Disabled look (when Prev/Next not shown) */
+	.page-btn.disabled {
+	    pointer-events: none;
+	    opacity: 0.4;
+	}
+	/* Clear disabled look for Approve */
+	.btn-disabled,
+	.btn-secondary:disabled {
+	    background-color: #f3f4f6 !important;  /* gray */
+	    color: #9ca3af !important;
+	    border: 1px solid #d1d5db !important;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	}
+
+	/* Kill hover on disabled */
+	.btn-disabled:hover,
+	.btn-secondary:disabled:hover {
+	    background-color: #f3f4f6 !important;
+	}
