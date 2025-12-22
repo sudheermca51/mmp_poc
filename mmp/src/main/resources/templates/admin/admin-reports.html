@@ -4,6 +4,7 @@
     <title>Admin - Reports</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+
 <body>
 <div class="layout">
     <aside class="sidebar admin-sidebar">
@@ -11,6 +12,7 @@
             <div class="logo">MMP</div>
             <div class="subtitle">Admin Portal</div>
         </div>
+
         <nav class="sidebar-nav">
             <a th:href="@{/admin/home}">HOME</a>
             <a th:href="@{/admin/patients}">Patients</a>
@@ -20,18 +22,39 @@
             <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+
     <main class="layout-main">
+
+        <!-- HEADER -->
         <div class="card header-card">
             <h2>Reports</h2>
+
+            <!-- 🔴 THIS BUTTON WAS MISSING -->
+            <a th:href="@{/admin/reports/upload}"
+               class="btn-primary"
+               style="margin-top: 12px; display: inline-block;">
+                Upload Report
+            </a>
         </div>
+
+        <!-- STATS -->
         <div class="card">
             <ul>
-                <li>Total Appointments: <strong th:text="${totalAppointments}"></strong></li>
-                <li>Total Fee Records: <strong th:text="${totalFees}"></strong></li>
-                <li>Total Amount: <strong th:text="${totalAmount}"></strong></li>
-                <li>Paid Fees Count: <strong th:text="${paidCount}"></strong></li>
+                <li>Total Appointments:
+                    <strong th:text="${totalAppointments}"></strong>
+                </li>
+                <li>Total Fee Records:
+                    <strong th:text="${totalFees}"></strong>
+                </li>
+                <li>Total Amount:
+                    <strong th:text="${totalAmount}"></strong>
+                </li>
+                <li>Paid Fees Count:
+                    <strong th:text="${paidCount}"></strong>
+                </li>
             </ul>
         </div>
+
     </main>
 </div>
 </body>

@@ -4,53 +4,78 @@
     <title>Patient Fees - MMP</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+
 <body>
 <div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo">MMP</div>
             <div class="subtitle">Patient Portal</div>
         </div>
+
         <nav class="sidebar-nav">
             <a th:href="@{/patient/home}">HOME</a>
-            <a href="#" onclick="alert('Profile placeholder'); return false;">Profile</a>
-            <a th:href="@{/patient/home}">Schedule Appointment</a>
-            <a href="#" onclick="alert('Information placeholder'); return false;">Information</a>
             <a class="active" th:href="@{/patient/fees}">Fees</a>
             <a th:href="@{/patient/reports}">Reports</a>
             <a th:href="@{/patient/messages}">Messages</a>
             <a th:href="@{/patient/logout}">Logout</a>
         </nav>
     </aside>
+
+    <!-- MAIN -->
     <main class="layout-main">
+
+        <!-- HEADER -->
         <div class="card header-card">
-            <div>
-                <h2>Fees</h2>
-                <p th:text="'Logged in as ' + ${patient.firstName} + ' ' + ${patient.lastName}"></p>
-            </div>
+            <h2>My Fees</h2>
+            <p>View and pay your pending medical fees</p>
         </div>
-        <div class="card">
+
+        <!-- EMPTY STATE -->
+        <div th:if="${fees.isEmpty()}" class="card empty-state">
+            <p>No fees available.</p>
+        </div>
+
+        <!-- FEES TABLE -->
+        <div th:if="${!fees.isEmpty()}" class="card">
             <table>
                 <thead>
                 <tr>
-                    <th>Date</th>
+                    <th>Appointment Date</th>
                     <th>Doctor</th>
-                    <th>Reason</th>
-                    <th>Amount</th>
-                    <th>Paid</th>
+                    <th>Description</th>
+                    <th>Amount (₹)</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="f : ${fees}">
-                    <td th:text="${#temporals.format(f.appointment.appointmentDateTime, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${f.appointment.appointmentDateTime.toString()}"></td>
                     <td th:text="${f.appointment.doctor.name}"></td>
-                    <td th:text="${f.appointment.reason}"></td>
+                    <td th:text="${f.description}"></td>
                     <td th:text="${f.amount}"></td>
-                    <td th:text="${f.paid}"></td>
+
+                    <td>
+                        <span th:if="${f.paid}" style="color:green;">Paid</span>
+                        <span th:if="${!f.paid}" style="color:red;">Pending</span>
+                    </td>
+
+                    <td>
+                        <a th:if="${!f.paid}"
+                           th:href="@{/patient/fees/pay/{id}(id=${f.id})}">
+                            Pay
+                        </a>
+                        <span th:if="${f.paid}">—</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
     </main>
 </div>
 </body>

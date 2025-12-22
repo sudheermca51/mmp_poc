@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Upload Reports</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar admin-sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Admin Portal</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin/home}">HOME</a>
+            <a th:href="@{/admin/patients}">Patients</a>
+            <a th:href="@{/admin/claim-center}">Claim Center</a>
+            <a class="active" th:href="@{/admin/reports}">Reports</a>
+            <a th:href="@{/admin/messages}">Messages</a>
+            <a th:href="@{/admin/logout}">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="layout-main">
+
+        <!-- HEADER -->
+        <div class="card header-card">
+            <h2>Upload Patient Report</h2>
+            <p>
+                Admin can upload reports by selecting a patient,
+                choosing one of the patient’s appointments,
+                and uploading the report file.
+                <br/>
+                <b>Note:</b> Reports are saved against the appointment,
+                not directly against the patient.
+            </p>
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="card">
+
+            <form th:action="@{/admin/reports/upload}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <!-- PATIENT SELECTION (ONLY THIS RELOADS PAGE) -->
+                <div class="form-group">
+                    <label class="form-label">Patient</label>
+					<select name="patientId"
+					        class="form-control"
+					        required
+					        onchange="location.href='?patientId=' + this.value">
+
+					    <option value="">-- Select Patient --</option>
+
+					    <option th:each="p : ${patients}"
+					            th:value="${p.id}"
+					            th:text="${p.firstName + ' ' + p.lastName}"
+					            th:selected="${p.id == selectedPatientId}">
+					    </option>
+
+					</select>
+
+                </div>
+
+                <!-- APPOINTMENT SELECTION (NO PAGE REFRESH) -->
+                <div class="form-group">
+                    <label class="form-label">Appointment</label>
+                    <select name="appointmentId" class="form-control" required>
+                        <option value="">-- Select Appointment --</option>
+
+                        <option th:each="a : ${appointments}"
+                                th:value="${a.id}"
+                                th:with="date=${a.appointmentDateTime.toString()}"
+                                th:text="${date + ' - ' + a.doctor.name}">
+                        </option>
+                    </select>
+                </div>
+
+				<!-- REPORT TYPE -->
+				<div class="form-group">
+				    <label class="form-label">Report Type</label>
+				    <select name="reportType"
+				            class="form-control"
+				            required
+				            onchange="updateFee(this.value)">
+				        <option value="">-- Select Report Type --</option>
+				        <option value="BLOOD">Blood Report</option>
+				        <option value="ECG">ECG Report</option>
+				        <option value="ULTRASOUND">Ultrasound Report</option>
+				    </select>
+				</div>
+				<!-- FEE AMOUNT -->
+				<div class="form-group">
+				    <label class="form-label">Fee Amount (₹)</label>
+				    <input type="number"
+				           id="feeAmount"
+				           name="feeAmount"
+				           class="form-control"
+				           readonly
+				           required />
+				</div>
+
+
+                <!-- FILE UPLOAD -->
+                <div class="form-group">
+                    <label class="form-label">Report File</label>
+                    <input type="file"
+                           name="file"
+                           class="form-control"
+                           required />
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        Upload Report
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </main>
+</div>
+<script>
+function updateFee(type) {
+    const fees = {
+        BLOOD: 500,
+        ECG: 800,
+        ULTRASOUND: 1200
+    };
+
+    document.getElementById("feeAmount").value = fees[type] || "";
+}
+</script>
+
+</body>
+</html>
