@@ -49,6 +49,8 @@
                     <th>Amount (₹)</th>
                     <th>Status</th>
                     <th>Action</th>
+					<th>Claim Status</th>
+					<th>Claim Action</th>
                 </tr>
                 </thead>
 
@@ -71,6 +73,25 @@
                         </a>
                         <span th:if="${f.paid}">—</span>
                     </td>
+					<td>
+					    <span th:if="${f.claim == null}">Not Submitted</span>
+					    <span th:if="${f.claim != null}" th:text="${f.claim.status}"></span>
+					</td>
+
+					<td>
+					    <!-- Submit Claim button -->
+					    <form th:if="${f.paid and f.claim == null}"
+					          th:action="@{/patient/claims/submit/{id}(id=${f.id})}"
+					          method="post">
+
+					        <button type="submit" class="btn-secondary">
+					            Submit Claim
+					        </button>
+					    </form>
+
+					    <span th:if="${f.claim != null}">—</span>
+					</td>
+
                 </tr>
                 </tbody>
             </table>

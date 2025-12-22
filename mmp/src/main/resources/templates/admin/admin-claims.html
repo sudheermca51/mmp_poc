@@ -4,13 +4,17 @@
     <title>Admin - Claim Center</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+
 <body>
 <div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar admin-sidebar">
         <div class="sidebar-header">
             <div class="logo">MMP</div>
             <div class="subtitle">Admin Portal</div>
         </div>
+
         <nav class="sidebar-nav">
             <a th:href="@{/admin/home}">HOME</a>
             <a th:href="@{/admin/patients}">Patients</a>
@@ -20,11 +24,70 @@
             <a th:href="@{/admin/logout}">Logout</a>
         </nav>
     </aside>
+
+    <!-- MAIN -->
     <main class="layout-main">
-        <div class="card">
+
+        <div class="card header-card">
             <h2>Claim Center</h2>
-            <p>Training placeholder for claim management.</p>
+            <p>Review and process patient insurance claims.</p>
         </div>
+
+        <!-- EMPTY STATE -->
+        <div class="card" th:if="${claims.isEmpty()}">
+            <p>No claims submitted yet.</p>
+        </div>
+
+        <!-- CLAIMS TABLE -->
+        <div class="card" th:if="${!claims.isEmpty()}">
+            <table class="patients-table">
+                <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Appointment</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="c : ${claims}">
+                    <td th:text="${c.patient.firstName + ' ' + c.patient.lastName}"></td>
+                    <td th:text="${c.appointment.doctor.name}"></td>
+                    <td th:text="${#temporals.format(c.appointment.appointmentDateTime,'yyyy-MM-dd')}"></td>
+                    <td th:text="${c.claimAmount}"></td>
+
+                    <td>
+                        <span th:text="${c.status}"
+                              th:classappend="${c.status == 'APPROVED'} ? 'status-pill approved' :
+                                             (${c.status == 'REJECTED'} ? 'status-pill rejected' : 'status-pill pending')">
+                        </span>
+                    </td>
+
+                    <td>
+                        <form th:if="${c.status == 'SUBMITTED'}"
+                              th:action="@{/admin/claim-center/{id}/approve(id=${c.id})}"
+                              method="post"
+                              style="display:inline">
+                            <button class="btn-secondary">Approve</button>
+                        </form>
+
+                        <form th:if="${c.status == 'SUBMITTED'}"
+                              th:action="@{/admin/claim-center/{id}/reject(id=${c.id})}"
+                              method="post"
+                              style="display:inline">
+                            <button class="btn-danger">Reject</button>
+                        </form>
+
+                        <span th:if="${c.status != 'SUBMITTED'}">—</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </main>
 </div>
 </body>
