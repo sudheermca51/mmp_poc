@@ -151,13 +151,6 @@ public class AdminPortalController {
 
         return "redirect:/admin/patients";
     }
-
-    @GetMapping("/claim-center")
-    public String claimCenter(Model model, HttpSession session) {
-        if (!isLogged(session)) return "redirect:/admin/login";
-        model.addAttribute("activeTab", "CLAIMS");
-        return "admin/admin-claims";
-    }
     @GetMapping("/users")
     public String listAdminUsers(
             @RequestParam(defaultValue = "username") String sortField,
