@@ -590,5 +590,40 @@ th {
     color: #16a34a;
     font-weight: 600;
 }
+/* ===== Clean form styling for MMP UI ===== */
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
 
+/* Table header */
+th {
+  font-weight: 600;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Table row text */
+td {
+  font-size: 14px;
+  color: #111827;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Priority */
+.priority-high   { background:#FECACA; color:#7F1D1D; }
+.priority-medium { background:#BFDBFE; color:#1E3A8A; }
+.priority-low    { background:#BBF7D0; color:#14532D; }
+
+/* Status */
+.status-progress { background:#FED7AA; color:#7C2D12; }
+.status-pending  { background:#E5E7EB; color:#374151; }
+.status-done     { background:#DCFCE7; color:#166534; }
 

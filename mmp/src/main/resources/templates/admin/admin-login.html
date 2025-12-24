@@ -3,10 +3,50 @@
 <head>
     <title>Admin Login - MMP</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<style>
+			.my-app-body {
+			  margin: 0;
+			  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+			  background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
+			  color: #0f172a;
+			  -webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			  background-image: url('/images/app-bg.jpg');
+			  background-size: cover;
+			  background-position: center;
+			  background-repeat: no-repeat;
+			}
+			.login-card {
+					    max-width: 480px;        /* prevents stretching */
+					    margin: 60px auto;       /* centers horizontally */
+					    padding: 32px;
+					    border-radius: 16px;
+					    background: white;
+					}
+					.login-container {
+					    display: flex;
+					    justify-content: center;
+					    align-items: center;
+					    min-height: 100vh;   /* vertically center */
+					    padding: 20px;
+					}
+					.btn-primary,
+						a.btn-primary {
+						    padding: 10px 22px !important;
+						    border-radius: 999px !important;
+						    display: inline-flex !important;
+						    align-items: center !important;
+						    justify-content: center !important;
+						    font-weight: 700 !important;
+						    color: #fff;
+						    background: linear-gradient(90deg,#22c55e,#0ea5e9);
+						    text-decoration: none !important; /* important fix */
+						}
+		</style>
 </head>
-<body>
-<div class="layout center-layout">
-    <div class="card login-card">
+<body class="my-app-body">
+<div class="login-container">
+    <div class="login-card">
         <h2>Admin Login</h2>
         <p>Demo admin: <strong>admin1/admin123</strong></p>
         <form method="post" th:action="@{/admin/login}">
