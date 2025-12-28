@@ -57,6 +57,7 @@ public class PatientDashboardController {
         Patient patient = getLoggedPatient(session);
         if (patient == null) return "redirect:/patient/login";
         List<Appointment> appts = apptRepo.findByPatientOrderByAppointmentDateTimeDesc(patient);
+        model.addAttribute("activeMenu", "HOME");
         model.addAttribute("activeTab", "HOME");
         model.addAttribute("patient", patient);
         model.addAttribute("appointments", appts);
