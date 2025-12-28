@@ -102,16 +102,7 @@
           </svg>
           <span>Schedule Appointment</span>
         </a>
-
-        <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
-          <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
-            <path d="M12 8h.01M11 12h1.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span>Information</span>
-        </a>
-
-        <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
+      <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
           <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M16 6H8a4 4 0 0 0 0 8h8" stroke="currentColor" stroke-width="1.6"/>
             <path d="M8 12h8M8 18h8" stroke="currentColor" stroke-width="1.6"/>

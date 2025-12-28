@@ -57,30 +57,12 @@ public class PatientDashboardController {
         Patient patient = getLoggedPatient(session);
         if (patient == null) return "redirect:/patient/login";
         List<Appointment> appts = apptRepo.findByPatientOrderByAppointmentDateTimeDesc(patient);
-        model.addAttribute("activeMenu", "HOME");
-        model.addAttribute("activeTab", "HOME");
+        model.addAttribute("activeMenu", "home");
+        model.addAttribute("activeTab", "home");
         model.addAttribute("patient", patient);
         model.addAttribute("appointments", appts);
         return "patient/patient-home";
     }
-
-//    @PostMapping("/appointments")
-//    public String createAppointment(HttpSession session,
-//                                    @RequestParam Long doctorId,
-//                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-//                                    @RequestParam String reason) {
-//        Patient patient = getLoggedPatient(session);
-//        if (patient == null) return "redirect:/patient/login";
-//        Doctor doctor = doctorRepo.findById(doctorId).orElseThrow();
-//        Appointment a = new Appointment();
-//        a.setPatient(patient);
-//        a.setDoctor(doctor);
-//        a.setAppointmentDateTime(dateTime);
-//        a.setReason(reason);
-//        a.setStatus("SCHEDULED");
-//        apptRepo.save(a);
-//        return "redirect:/patient/home";
-//    }
     @PostMapping("/appointments/{id}/cancel")
 	public String cancelAppointment(@PathVariable Long id, HttpSession session) {
 		Patient patient = getLoggedPatient(session);
