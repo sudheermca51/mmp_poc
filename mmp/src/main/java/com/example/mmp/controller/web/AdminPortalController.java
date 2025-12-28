@@ -75,7 +75,7 @@ public class AdminPortalController {
     public String home(Model model, HttpSession session) {
         if (!isLogged(session)) return "redirect:/admin/login";
         List<Appointment> appts = apptRepo.findAll();
-        model.addAttribute("activeTab", "HOME");
+        model.addAttribute("activeTab", "Home");
         model.addAttribute("appointments", appts);
         model.addAttribute("today", LocalDate.now());
         return "admin/admin-home";

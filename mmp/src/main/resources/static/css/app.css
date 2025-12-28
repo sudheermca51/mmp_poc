@@ -626,4 +626,37 @@ td {
 .status-progress { background:#FED7AA; color:#7C2D12; }
 .status-pending  { background:#E5E7EB; color:#374151; }
 .status-done     { background:#DCFCE7; color:#166534; }
+.card h2 {
+				    margin: 0 0 12px 0;
+				    text-align: center;
+				    font-size: 28px;
+				    font-weight: 800;
+				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+				    -webkit-background-clip: text;
+				    -webkit-text-fill-color: transparent;
+			}
+			/* Force gradient on table header */
+			.table-styled thead th {
+			    background: linear-gradient(90deg, #4f46e5, #9333ea) !important;
+			    color: #fff !important;
+			    font-weight: 700;
+			    padding: 12px;
+			    font-size: 14px;
+			    text-transform: uppercase;
+			}
 
+			/* Optional rounded corners */
+			.table-styled thead th:first-child {
+			    border-top-left-radius: 12px !important;
+			}
+			.table-styled thead th:last-child {
+			    border-top-right-radius: 12px !important;
+			}
+			.table-title {
+			    font-size: 28px;
+			    font-weight: 800;
+			    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+			    -webkit-background-clip: text;
+			    -webkit-text-fill-color: transparent;
+			    margin-bottom: 12px;
+			}

@@ -4,6 +4,17 @@
     <title>Patient Messages - MMP</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 	<meta http-equiv="refresh" content="30">
+	<style>
+		.card h2 {
+				    margin: 0 0 12px 0;
+				    text-align: center;
+				    font-size: 28px;
+				    font-weight: 800;
+				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+				    -webkit-background-clip: text;
+				    -webkit-text-fill-color: transparent;
+			}
+	</style>
 </head>
 <body>
 <div class="layout">
@@ -82,12 +93,6 @@
 	       </div>
 	   </aside>
     <main class="layout-main">
-        <div class="card header-card">
-            <div>
-                <h2>Messages</h2>
-                <p th:text="'Logged in as ' + ${patient.firstName} + ' ' + ${patient.lastName}"></p>
-            </div>
-        </div>
 		<div th:if="${successMessage}" class="alert alert-success">
 		    <span th:text="${successMessage}"></span>
 		</div>
@@ -97,17 +102,19 @@
 		</div>
 
         <div class="card">
+			<h2>Messages</h2>
+			<p th:text="'Logged in as ' + ${patient.firstName} + ' ' + ${patient.lastName}"></p>
             <h3>Send a message to Admin</h3>
             <form method="post" th:action="@{/patient/messages}">
                 <label>Message</label>
-				<textarea name="text" rows="5" cols="30" required placeholder="Type your message here..."></textarea>
+				<textarea name="text" rows="5" cols="130" required placeholder="Type your message here..."></textarea>
 
                 <button class="btn-primary" type="submit">Send</button>
             </form>
         </div>
         <div class="card">
             <h3>Conversation</h3>
-			<table style="width:100%; table-layout: fixed;">
+			<table style="width:100%; table-layout: fixed;" class="table-styled">
                 <thead>
                 <tr>
                     <th>Time</th>
