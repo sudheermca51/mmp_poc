@@ -40,7 +40,8 @@ public class AdminClaimCenterController {
 
         List<Claim> claims = claimRepo.findAll();
         model.addAttribute("claims", claims == null ? List.of() : claims);
-
+        model.addAttribute("activeMenu", "claim-center");
+        model.addAttribute("activeTab", "claim-center");
         return "admin/admin-claims";
     }
 

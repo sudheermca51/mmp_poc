@@ -69,7 +69,7 @@ public class PatientReportsController {
 
         model.addAttribute("patient", patient);
         model.addAttribute("reports", reports);
-
+        model.addAttribute("activeMenu","reports");
         return "patient/patient-reports";
     }
 

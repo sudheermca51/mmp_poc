@@ -44,7 +44,7 @@ public class PatientFeesController {
 
         List<Fee> fees = feeRepo.findByAppointmentPatientId(patientId);
         model.addAttribute("fees", fees);
-
+        model.addAttribute("activeMenu","fees");
         return "patient/patient-fees";
     }
 

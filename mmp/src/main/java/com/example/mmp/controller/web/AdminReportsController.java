@@ -72,12 +72,12 @@ public class AdminReportsController {
 		long paidCount = feeRepo.findAll().stream()
 				.filter(f -> f.isPaid())
 				.count();
-
+		 model.addAttribute("activeMenu", "reports");
+	        model.addAttribute("activeTab", "reports");
 		model.addAttribute("totalAppointments", totalAppointments);
 		model.addAttribute("totalFees", totalFees);
 		model.addAttribute("totalAmount", totalAmount);
 		model.addAttribute("paidCount", paidCount);
-
 		return "admin/admin-reports";
 	}
 

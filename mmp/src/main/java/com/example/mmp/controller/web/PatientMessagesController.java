@@ -49,6 +49,7 @@ public class PatientMessagesController {
         List<Message> messages = messageRepo.findByPatientOrderByCreatedAtDesc(p);
         model.addAttribute("patient", p);
         model.addAttribute("messages", messages);
+        model.addAttribute("activeMenu","messages");
         return "patient/patient-messages";
     }
 

@@ -35,6 +35,7 @@ public class AdminMessagesController {
         if (!isLogged(session)) return "redirect:/admin/login";
 
         model.addAttribute("patients", messageRepo.findDistinctPatients());
+        model.addAttribute("activeMenu","Messages");
         return "admin/admin-messages-inbox";
     }
 

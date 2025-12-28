@@ -75,7 +75,8 @@ public class AdminPortalController {
     public String home(Model model, HttpSession session) {
         if (!isLogged(session)) return "redirect:/admin/login";
         List<Appointment> appts = apptRepo.findAll();
-        model.addAttribute("activeTab", "Home");
+        model.addAttribute("activeTab", "home");
+        model.addAttribute("activeMenu","home");
         model.addAttribute("appointments", appts);
         model.addAttribute("today", LocalDate.now());
         return "admin/admin-home";
@@ -117,6 +118,9 @@ public class AdminPortalController {
                 sortDir.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("status", status);
+        model.addAttribute("activeMenu","patients");
+        model.addAttribute("activeTab", "patients");
+   
 
         return "admin/admin-patients";
     }
