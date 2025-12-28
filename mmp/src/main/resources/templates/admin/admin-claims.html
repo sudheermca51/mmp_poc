@@ -3,6 +3,20 @@
 <head>
     <title>Admin - Claim Center</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<style>
+			.card h2 {
+					    margin: 0 0 12px 0;
+					    text-align: center;
+					    font-size: 28px;
+					    font-weight: 800;
+					    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+					    -webkit-background-clip: text;
+					    -webkit-text-fill-color: transparent;
+				}
+			 
+
+
+		</style>
 </head>
 
 <body>
@@ -16,14 +30,14 @@
         </div>
 
 		<nav class="sidebar-nav">
-		           <a class="active" th:href="@{/admin/home}">			<!-- home SVG -->
+		           <a  th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/admin/home}">			<!-- home SVG -->
 					    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 					      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 					      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 					    </svg>
 					    <span>Home</span>
 				</a>
-		           <a th:href="@{/admin/patients}">			 <svg class="menu-svg" width="22" height="22"
+		           <a  th:classappend="${activeMenu}=='patients' ? ' active' : ''" th:href="@{/admin/patients}">			 <svg class="menu-svg" width="22" height="22"
 				       viewBox="0 0 24 24" fill="none"
 				       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 				    <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/>
@@ -37,7 +51,7 @@
 				  </svg>
 				  <span>Patients</span>
 				</a>
-		           <a th:href="@{/admin/claim-center}">			<svg class="menu-svg" width="22" height="22"
+		           <a th:classappend="${activeMenu}=='claim-center' ? ' active' : ''" th:href="@{/admin/claim-center}">			<svg class="menu-svg" width="22" height="22"
 				      viewBox="0 0 24 24" fill="none"
 				      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 				   <rect x="4" y="3" width="16" height="18"
@@ -50,18 +64,18 @@
 				         stroke-linecap="round" stroke-linejoin="round"/>
 				 </svg>
 				 <span>Claim Center</span></a>
-		           <a th:href="@{/admin/reports}">			<!-- report SVG -->
+		           <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/admin/reports}">			<!-- report SVG -->
 						    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 						      <rect x="4" y="3.5" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/>
 						      <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
 						    </svg>
 						    <span>Reports</span></a>
-		           <a th:href="@{/admin/messages}">			<!-- message SVG -->
+		           <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/admin/messages}">			<!-- message SVG -->
 					    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 					      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 					    </svg>
 					    <span>Messages</span></a>
-		           <a th:href="@{/admin/logout}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		           <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/admin/logout}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 						      <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 						      <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 						      <path d="M21 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -74,10 +88,6 @@
     <!-- MAIN -->
     <main class="layout-main">
 
-        <div class="card header-card">
-            <h2>Claim Center</h2>
-            <p>Review and process patient insurance claims.</p>
-        </div>
 
         <!-- EMPTY STATE -->
         <div class="card" th:if="${claims.isEmpty()}">
@@ -86,7 +96,9 @@
 
         <!-- CLAIMS TABLE -->
         <div class="card" th:if="${!claims.isEmpty()}">
-            <table class="patients-table">
+			<h2>Claim Center</h2>
+			         <p>Review and process patient insurance claims.</p>
+              <table class="table-styled">
                 <thead>
                 <tr>
                     <th>Patient</th>
