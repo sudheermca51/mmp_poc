@@ -3,69 +3,221 @@
 <head>
     <title>Admin - Patients</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+	<style>
+			.card h2 {
+					    margin: 0 0 12px 0;
+					    text-align: center;
+					    font-size: 28px;
+					    font-weight: 800;
+					    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+					    -webkit-background-clip: text;
+					    -webkit-text-fill-color: transparent;
+				}
+			</style>
 </head>
+
 <body>
 <div class="layout">
     <aside class="sidebar admin-sidebar">
         <div class="sidebar-header">
-            <div class="logo">MMP</div>
+            <div class="logo">Nexus Pulse</div>
             <div class="subtitle">Admin Portal</div>
         </div>
-        <nav class="sidebar-nav">
-            <a th:href="@{/admin/home}">HOME</a>
-            <a class="active" th:href="@{/admin/patients}">Patients</a>
-            <a th:href="@{/admin/claim-center}">Claim Center</a>
-            <a th:href="@{/admin/reports}">Reports</a>
-            <a th:href="@{/admin/messages}">Messages</a>
-            <a th:href="@{/admin/logout}">Logout</a>
-        </nav>
+		<nav class="sidebar-nav">
+			  	             <a th:classappend="${activeMenu}=='home' ? ' active' : ''"  th:href="@{/admin/home}">			<!-- home SVG -->
+			  	  			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  			      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  			      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  			    </svg>
+			  	  			    <span>Home</span>
+			  	  		</a>
+			  	             <a th:classappend="${activeMenu}=='patients' ? ' active' : ''" th:href="@{/admin/patients}">			 <svg class="menu-svg" width="22" height="22"
+			  	  		       viewBox="0 0 24 24" fill="none"
+			  	  		       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  		    <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/>
+			  	  		    <circle cx="16" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+			  	  		    <path d="M4 19c0-3 3-5 5-5s5 2 5 5"
+			  	  		          stroke="currentColor" stroke-width="1.6"
+			  	  		          stroke-linecap="round"/>
+			  	  		    <path d="M13.5 19c.3-2 2.1-3.5 4-3.5 1.2 0 2.3.5 3 1.2"
+			  	  		          stroke="currentColor" stroke-width="1.6"
+			  	  		          stroke-linecap="round"/>
+			  	  		  </svg>
+			  	  		  <span>Patients</span>
+			  	  		</a>
+			  	             <a th:classappend="${activeMenu}=='claim-center' ? ' active' : ''" th:href="@{/admin/claim-center}">			<svg class="menu-svg" width="22" height="22"
+			  	  		      viewBox="0 0 24 24" fill="none"
+			  	  		      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  		   <rect x="4" y="3" width="16" height="18"
+			  	  		         rx="2" stroke="currentColor" stroke-width="1.6"/>
+			  	  		   <path d="M8 7h8M8 11h8M8 15h5"
+			  	  		         stroke="currentColor" stroke-width="1.6"
+			  	  		         stroke-linecap="round"/>
+			  	  		   <path d="M14.5 15.5l1.5 1.5 3-3"
+			  	  		         stroke="currentColor" stroke-width="1.6"
+			  	  		         stroke-linecap="round" stroke-linejoin="round"/>
+			  	  		 </svg>
+			  	  		 <span>Claim Center</span></a>
+			  	             <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/admin/reports}">			<!-- report SVG -->
+			  	  				    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  				      <rect x="4" y="3.5" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/>
+			  	  				      <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+			  	  				    </svg>
+			  	  				    <span>Reports</span></a>
+			  	             <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/admin/messages}">			<!-- message SVG -->
+			  	  			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  			      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  			    </svg>
+			  	  			    <span>Messages</span></a>
+			  	             <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/admin/logout}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+			  	  				      <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  				      <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  				      <path d="M21 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+			  	  				    </svg>
+			  	  				    <span>Logout</span>
+			  	  		</a>
+			  	         </nav>
     </aside>
 
     <main class="layout-main">
         <div class="card header-card">
-            <div>
-                <h2>Patients</h2>
-                <p>Approve or reject patients. Only approved patients can login.</p>
-            </div>
-            <div>
-                <form th:action="@{/admin/patients}" method="get">
-                    <label>Search</label>
-                    <input type="text" name="q" th:value="${query}" placeholder="Name or email">
-                    <button class="btn-secondary" type="submit">Search</button>
-                </form>
-            </div>
+            <h2>Patients</h2>
+            <p>Approve or reject patients. Only approved patients can login.</p>
         </div>
 
-        <div class="card">
-            <table>
+        <!-- FILTER CHIPS -->
+        <div class="filter-chips">
+            <a th:href="@{/admin/patients}" class="chip">All</a>
+            <a th:href="@{/admin/patients(status='approved')}" class="chip approved">Approved</a>
+            <a th:href="@{/admin/patients(status='rejected')}" class="chip rejected">Rejected</a>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div th:if="${patients.isEmpty()}" class="empty-state">
+            <h3>No patients found</h3>
+            <p>Try adjusting your filters.</p>
+        </div>
+
+        <!-- TABLE -->
+        <div th:if="${!patients.isEmpty()}" class="card patients-card">
+            <table class="patients-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Approved</th>
-                    <th>Actions</th>
+                    <!-- USERNAME SORT -->
+                    <th>
+                        <a th:href="@{/admin/patients(
+                            page=0,
+                            sortField='username',
+                            sortDir=${reverseSortDir},
+                            status=${status}
+                        )}">
+                            USERNAME
+                            <span th:if="${sortField == 'username'}">
+                                <span th:if="${sortDir == 'asc'}">▲</span>
+                                <span th:if="${sortDir == 'desc'}">▼</span>
+                            </span>
+                        </a>
+                    </th>
+
+                    <!-- FULL NAME SORT -->
+                    <th>
+                        <a th:href="@{/admin/patients(
+                            page=0,
+                            sortField='firstName',
+                            sortDir=${reverseSortDir},
+                            status=${status}
+                        )}">
+                            FULL NAME
+                            <span th:if="${sortField == 'firstName'}">
+                                <span th:if="${sortDir == 'asc'}">▲</span>
+                                <span th:if="${sortDir == 'desc'}">▼</span>
+                            </span>
+                        </a>
+                    </th>
+
+                    <th>EMAIL</th>
+                    <th>STATUS</th>
+                    <th class="actions-col">ACTIONS</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="p : ${patients}">
-                    <td th:text="${p.id}"></td>
                     <td th:text="${p.username}"></td>
                     <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
                     <td th:text="${p.email}"></td>
-                    <td th:text="${p.approved}"></td>
+
                     <td>
-                        <form th:action="@{'/admin/patients/' + ${p.id} + '/approve'}" method="post" style="display:inline;">
-                            <button class="btn-secondary" type="submit">Approve</button>
+                        <span th:if="${p.approved}" class="status-pill approved">Approved</span>
+                        <span th:if="${p.rejected}" class="status-pill rejected">Rejected</span>
+                    </td>
+
+                    <td class="actions-col">
+                        <!-- APPROVE -->
+                        <form th:action="@{/admin/patients/{id}/approve(id=${p.id})}" method="post">
+                            <button
+                                class="btn-secondary"
+                                th:disabled="${p.approved}"
+                                th:classappend="${p.approved} ? ' btn-disabled'">
+                                Approve
+                            </button>
                         </form>
-                        <form th:action="@{'/admin/patients/' + ${p.id} + '/reject'}" method="post" style="display:inline;">
-                            <button class="btn-secondary" type="submit">Reject</button>
+
+                        <!-- REJECT -->
+                        <form th:action="@{/admin/patients/{id}/reject(id=${p.id})}" method="post">
+                            <button class="btn-danger" th:disabled="${p.rejected}">
+                                Reject
+                            </button>
                         </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <!-- PAGINATION -->
+            <div class="pagination-footer">
+                <span class="pagination-info">
+                    Page <b th:text="${currentPage + 1}"></b>
+                    of <b th:text="${totalPages}"></b>
+                </span>
+
+                <div class="pagination-controls">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/admin/patients(
+                            page=${currentPage - 1},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}"
+                       class="page-btn">
+                        Prev
+                    </a>
+
+                    <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                       th:href="@{/admin/patients(
+                            page=${i},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}"
+                       th:text="${i + 1}"
+                       class="page-btn"
+                       th:classappend="${i == currentPage} ? ' active'">
+                    </a>
+
+                    <a th:if="${currentPage + 1 < totalPages}"
+                       th:href="@{/admin/patients(
+                            page=${currentPage + 1},
+                            sortField=${sortField},
+                            sortDir=${sortDir},
+                            status=${status}
+                       )}"
+                       class="page-btn">
+                        Next
+                    </a>
+                </div>
+            </div>
         </div>
     </main>
 </div>

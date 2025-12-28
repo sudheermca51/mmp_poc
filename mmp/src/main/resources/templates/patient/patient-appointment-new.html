@@ -1,78 +1,56 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <meta charset="utf-8"/>
   <title>New Appointment</title>
+
+  <!-- Flatpickr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <link rel="stylesheet" th:href="@{/css/app.css}">
-  <script>
-    (function(){
-      // doctor card selection
-      document.querySelectorAll('.doctor-card').forEach(function(card){
-        card.addEventListener('click', function(){
-          // clear previous selection
-          document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
-          // mark selected
-          card.classList.add('selected');
-          // set hidden field
-          var did = card.getAttribute('data-doctor-id');
-          document.getElementById('doctorId').value = did;
-        });
-      });
 
-      // flatpickr init with datetime
-      function initDateTimePicker() {
-        if (typeof flatpickr !== 'undefined') {
-          flatpickr("#dateTimeInput", {
-            enableTime: true,
-            dateFormat: "Y-m-d\\TH:i",   // matches ISO-like value 'yyyy-mm-ddTHH:MM' good for binding
-            minDate: "today",
-            time_24hr: true,
-            minuteIncrement: 15
-          });
-        } else {
-          // fallback: turn into native datetime-local if browser supports it
-          var el = document.getElementById('dateTimeInput');
-          try {
-            el.type = 'datetime-local';
-          } catch(e){
-            // nothing
-          }
-        }
-      }
+  <style>
+    /* style for flatpickr visible input */
+    .flatpickr-input[readonly]{
+      background:#fff;
+      cursor:pointer;
+      width:100%;
+      padding:8px;
+      border-radius:6px;
+      border:1px solid #d1d5db;
+      box-sizing:border-box;
+    }
 
-      // run after DOM ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initDateTimePicker);
-      } else {
-        initDateTimePicker();
-      }
-
-      // optional: simple validation before submit to ensure a doctor chosen
-      var form = document.querySelector('form[th\\:action^="@{/patient/appointments/new}"], form[action="/patient/appointments/new"]') || document.querySelector('form');
-      if(form){
-        form.addEventListener('submit', function(e){
-          var doctorVal = document.getElementById('doctorId').value;
-          if(!doctorVal || doctorVal.trim()===''){
-            e.preventDefault();
-            alert('Please select a doctor first.');
-            return false;
-          }
-        });
-      }
-    })();
-  </script>
+    .doctor-card.selected {
+      outline: 3px solid rgba(59,130,246,0.18);
+      box-shadow: 0 12px 40px rgba(14,165,233,0.06);
+    }
+    .doctor-card .selected-badge { display:none; }
+    .doctor-card.selected .selected-badge { display:block; }
+	.card h3 {
+					    margin: 0 0 12px 0;
+					    text-align: center;
+						font-size: 32px;
+							    font-weight: 800;
+					    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+					    -webkit-background-clip: text;
+					    -webkit-text-fill-color: transparent;
+				}
+  </style>
 </head>
+ 
 <body>
+<div class="layout">
 
-	<div class="layout">
-	    <aside class="sidebar">
-	        <div class="sidebar-header">
-	            <div class="logo">MMP</div>
-	            <div class="subtitle">Patient Portal</div>
-	        </div>
-			<nav class="sidebar-nav">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">MMP</div>
+      <div class="subtitle">Patient Portal</div>
+    </div>
+
+	<nav class="sidebar-nav">
 			  <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
 			    <!-- home SVG -->
 			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -82,7 +60,7 @@
 			    <span>Home</span>
 			  </a>
 
-			  <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" href="#" onclick="alert('Profile placeholder'); return false;">
+			  <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" th:href="@{/patient/profile}">
 			    <!-- profile SVG -->
 			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 			      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -99,16 +77,6 @@
 			    </svg>
 			    <span>Schedule Appointment</span>
 			  </a>
-
-			  <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
-			    <!-- info SVG -->
-			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-			      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
-			      <path d="M12 8h.01M11 12h1.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-			    </svg>
-			    <span>Information</span>
-			  </a>
-
 			  <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
 			    <!-- rupee SVG -->
 			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -146,149 +114,154 @@
 			  </a>
 			</nav>
 
-	        <div class="sidebar-footer">
-	            Training build - Patient view
-	        </div>
-	    </aside>
-    <main class="layout-main">
-      <div class="card">
-        <h3>Schedule Appointment</h3>
+    <div class="sidebar-footer">Training build - Patient view</div>
+  </aside>
 
-        <form method="post" th:action="@{/patient/appointments/new}">
-          
-        <!--  <label>Doctor</label>
-          <select name="doctorId" required>
-            <option th:each="d : ${doctors}"
-                    th:value="${d.id}"
-                    th:text="${d.name + ' (' + d.specialization + ')'}">
-            </option>
-          </select>-->
-		  <label>Choose Doctor</label>
+  <!-- Main area -->
+  <main class="layout-main">
+    <div class="card">
+      <h3>Schedule Appointment</h3>
 
-		  <!-- Hidden field -->
-		  <input type="hidden" name="doctorId" id="doctorId" required>
+      <form method="post" th:action="@{/patient/appointments/new}">
 
-		  <div class="doctor-grid" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;">
-		      <div th:each="d : ${doctors}"
-		           class="doctor-card"
-		           th:attr="data-doctor-id=${d.id}, data-doctor-name=${d.name}"
-		           style="border:1px solid #e5e7eb; padding:12px; border-radius:10px; width:200px; cursor:pointer;
-		                  background:#fff; box-shadow:0 6px 16px rgba(15,23,42,0.04); text-align:center;">
+        <label>Choose Doctor</label>
 
-		          <!-- FIXED IMAGE LINE -->
-		          <img th:src="@{'/images/doctors/' + ${d.photoPath}}"
-		               alt="Doctor"
-		               style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:10px;"
-		               onerror="this.src='/images/default-doctor.png';"/>
+        <!-- hidden doctor input -->
+        <input type="hidden" name="doctorId" id="doctorId">
 
-		          <div style="font-weight:700; margin-bottom:4px;" th:text="${d.name}">Doctor Name</div>
+        <div class="doctor-grid" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:8px;">
+          <div th:each="d : ${doctors}"
+               class="doctor-card"
+               th:attr="data-doctor-id=${d.id}"
+               style="border:1px solid #e5e7eb; padding:12px; border-radius:10px; width:200px; cursor:pointer;
+                      background:#fff; box-shadow:0 6px 16px rgba(15,23,42,0.04); text-align:center;">
 
-		          <div style="font-size:13px; color:#6b7280;" th:text="${d.specialization}">Specialization</div>
+            <img th:src="@{'/images/doctors/' + ${d.photoPath}}"
+                 alt="Doctor"
+                 style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:10px;"
+                 onerror="this.src='/images/default-doctor.png';"/>
 
-		          <div class="selected-badge"
-		               style="display:none; margin-top:8px; font-size:13px; color:#065f46;">
-		              Selected ✓
-		          </div>
-		      </div>
-		  </div>
+            <div style="font-weight:700; margin-bottom:4px;" th:text="${d.name}">Doctor Name</div>
+            <div style="font-size:13px; color:#6b7280;" th:text="${d.specialization}">Specialization</div>
 
-		  <style>
-		      .doctor-card.selected {
-		          outline: 3px solid rgba(59,130,246,0.18);
-		          box-shadow: 0 12px 40px rgba(14,165,233,0.06);
-		      }
-		      .doctor-card.selected .selected-badge { display:block; }
-		  </style>
-
-         <!-- <label>Date &amp; Time</label>
-          <input type="datetime-local" name="dateTime" required/>-->
-		  <label>Date &amp; Time</label>
-		  <input id="dateTimeInput" name="dateTime" type="text" required
-		         placeholder="Select date & time" style="width:100%; padding:8px; border-radius:6px; border:1px solid #d1d5db;"
-		         data-native-fallback="true"/>
-
-          <label>Reason</label>
-          <input type="text" name="reason" required/>
-
-          <div style="margin-top:12px;">
-            <button class="btn-primary" type="submit">Create</button>
-            <a th:href="@{/patient/home}" class="btn-ghost" style="margin-left:8px;">Cancel</a>
+            <div class="selected-badge" style="margin-top:8px; font-size:13px; color:#065f46;">
+              Selected ✓
+            </div>
           </div>
+        </div>
 
-        </form>
-      </div>
-    </main>
+        <br>
 
-  </div> <!-- ✅ Correct closing for .layout -->
-  <script>
-  (function(){
-    // 1) doctor card click handler (delegated, safe if cards are dynamic)
-    document.addEventListener('click', function(evt){
-      const card = evt.target.closest('.doctor-card');
-      if(!card) return;
+        <label>Date</label>
+        <input id="dateInput" name="date" type="text"
+               placeholder="Select date"
+               autocomplete="off"
+               style="width:100%; padding:8px; border-radius:6px; border:1px solid #d1d5db; margin-top:6px;" />
 
-      // remove previous selected
-      document.querySelectorAll('.doctor-card.selected').forEach(c => c.classList.remove('selected'));
-      // mark current
-      card.classList.add('selected');
+        <br><br>
 
-      // set hidden field value
-      const did = card.getAttribute('data-doctor-id') || card.dataset.doctorId;
-      const hid = document.getElementById('doctorId');
-      if(hid) hid.value = did || '';
+        <label>Reason</label>
+        <input type="text" name="reason" required
+               style="width:100%; padding:8px; border-radius:6px; border:1px solid #d1d5db; margin-top:6px;" />
 
-      // optional: move focus to date input for faster flow
-      const dt = document.getElementById('dateTimeInput');
-      if(dt) dt.focus();
-    });
+        <div style="margin-top:12px;">
+          <button class="btn-primary" type="submit">Create</button>
+          <a th:href="@{/patient/home}" class="btn-ghost" style="margin-left:8px;">Cancel</a>
+        </div>
 
-    // 2) init Flatpickr on the date/time input
-    function initFlatpickr() {
-      const el = document.getElementById('dateTimeInput');
-      if(!el) return;
+      </form>
+    </div>
+  </main>
 
-      if(window.flatpickr) {
-        // keep format friendly for backend binding (YYYY-MM-DD HH:MM)
-        flatpickr(el, {
-          enableTime: true,
-          dateFormat: "Y-m-d H:i",
-          time_24hr: true,
-          minuteIncrement: 15,
-          minDate: "today",
-          allowInput: false
-        });
-      } else {
-        // fallback: use native datetime-local where available
-        try {
-          el.type = 'datetime-local';
-          el.min = new Date().toISOString().slice(0,16); // yyyy-mm-ddThh:mm
-        } catch(e) { /* ignore */ }
-      }
-    }
+</div>
 
-    // 3) ensure a doctor is chosen before submit (small UX guard)
-    (function attachSubmitGuard(){
-      const form = document.querySelector('form[th\\:action*="/patient/appointments/new"], form[action="/patient/appointments/new"]') || document.querySelector('form');
-      if(!form) return;
-      form.addEventListener('submit', function(e){
-        const hid = document.getElementById('doctorId');
-        if(!hid || !hid.value || hid.value.trim()==='') {
-          e.preventDefault();
-          alert('Please select a doctor before creating the appointment.');
-          // focus first available doctor card
-          const first = document.querySelector('.doctor-card');
-          if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
-          return false;
-        }
+<!-- FINAL CLEAN WORKING SCRIPT -->
+<script>
+(function(){
+
+  function $id(id){ return document.getElementById(id); }
+
+  /* -------------------------
+     Doctor card selection
+  ------------------------- */
+  document.addEventListener('click', function(evt){
+    const card = evt.target.closest && evt.target.closest('.doctor-card');
+    if(!card) return;
+
+    document.querySelectorAll('.doctor-card.selected')
+            .forEach(c => c.classList.remove('selected'));
+
+    card.classList.add('selected');
+
+    const did = card.getAttribute('data-doctor-id');
+    const hid = $id('doctorId');
+    if(hid) hid.value = did || '';
+
+    const dt = $id('dateInput');
+    if(dt) dt.focus();
+  });
+
+  /* -------------------------
+     Flatpickr Date Only
+  ------------------------- */
+  function initDatePicker(){
+    const el = $id('dateInput');
+    if(!el) return;
+
+    if(window.flatpickr){
+      flatpickr(el, {
+        enableTime: false,
+        dateFormat: "Y-m-d",     // backend-friendly value
+        altInput: true,
+        altFormat: "F j, Y",     // user-friendly format
+        disableMobile: true,
+        minDate: "today",
+        allowInput: false
       });
-    })();
 
-    // DOM ready init
-    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFlatpickr);
-    else initFlatpickr();
+    } else {
+      // fallback to native date input
+      el.type = "date";
+      el.min = new Date().toISOString().slice(0,10);
+    }
+  }
 
-  })();
-  </script>
+  /* -------------------------
+     Submit Validation
+  ------------------------- */
+  function attachSubmitGuard(){
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e){
+
+      if(!$id('doctorId').value){
+        e.preventDefault();
+        alert("Please select a doctor.");
+        return false;
+      }
+
+      if(!$id('dateInput').value && !$id('dateInput')._flatpickr){
+        e.preventDefault();
+        alert("Please select a date.");
+        return false;
+      }
+    });
+  }
+
+  /* -------------------------
+     Initialize
+  ------------------------- */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){
+      initDatePicker();
+      attachSubmitGuard();
+    });
+  } else {
+    initDatePicker();
+    attachSubmitGuard();
+  }
+
+})();
+</script>
 
 </body>
 </html>

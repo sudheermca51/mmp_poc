@@ -1,10 +1,15 @@
 package com.example.mmp.repository;
 
-import com.example.mmp.model.Patient;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.mmp.model.Patient;
 
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByUsername(String username);
@@ -23,5 +28,12 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     // Derived query — Spring Data will create this automatically
     Optional<Patient> findByUsernameIgnoreCaseAndApprovedTrueAndRejectedFalse(String username);
 
-  
+    List<Patient> findByApprovedTrue(Sort sort);
+
+    List<Patient> findByRejectedTrue(Sort sort);
+    
+    Page<Patient> findByApprovedTrue(Pageable pageable);
+
+    Page<Patient> findByRejectedTrue(Pageable pageable);
+
 }

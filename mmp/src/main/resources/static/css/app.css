@@ -5,7 +5,18 @@ body {
   background: #f3f4f6;
   color: #111827;
 }
-
+.btn-primary,
+	a.btn-primary {
+	    padding: 10px 22px !important;
+	    border-radius: 999px !important;
+	    display: inline-flex !important;
+	    align-items: center !important;
+	    justify-content: center !important;
+	    font-weight: 700 !important;
+	    color: #fff;
+	    background: linear-gradient(90deg,#22c55e,#0ea5e9);
+	    text-decoration: none !important; /* important fix */
+	}
 .layout {
   display: flex;
   min-height: 100vh;
@@ -185,10 +196,18 @@ button {
   font-size: 13px;
 }
 
-.btn-primary {
-  background: linear-gradient(to right, #22c55e, #0ea5e9);
-  color: white;
+ 
+
+/* Make sure anchor does not get link-specific outline or underline */
+a.btn-primary:focus,
+button.btn-primary:focus {
+  outline: 3px solid rgba(14,165,233,.18);
+  outline-offset: 2px;
 }
+
+/* Keep hover/active consistent */
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(14,165,233,.14); }
+.btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
   background: rgba(15, 23, 42, 0.03);
@@ -200,6 +219,7 @@ button {
   background: transparent;
   color: #4b5563;
 }
+
 
 .subtext {
   font-size: 12px;
@@ -547,4 +567,96 @@ th {
 
   box-sizing: border-box;
 }
+.sugg { 
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid rgba(14,165,233,0.12);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sugg:hover { box-shadow: 0 6px 18px rgba(14,165,233,0.08); }
+.status-open {
+    color: #dc2626;
+    font-weight: 600;
+}
 
+.status-progress {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.status-closed {
+    color: #16a34a;
+    font-weight: 600;
+}
+/* ===== Clean form styling for MMP UI ===== */
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* Table header */
+th {
+  font-weight: 600;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Table row text */
+td {
+  font-size: 14px;
+  color: #111827;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Priority */
+.priority-high   { background:#FECACA; color:#7F1D1D; }
+.priority-medium { background:#BFDBFE; color:#1E3A8A; }
+.priority-low    { background:#BBF7D0; color:#14532D; }
+
+/* Status */
+.status-progress { background:#FED7AA; color:#7C2D12; }
+.status-pending  { background:#E5E7EB; color:#374151; }
+.status-done     { background:#DCFCE7; color:#166534; }
+.card h2 {
+				    margin: 0 0 12px 0;
+				    text-align: center;
+				    font-size: 28px;
+				    font-weight: 800;
+				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+				    -webkit-background-clip: text;
+				    -webkit-text-fill-color: transparent;
+			}
+			/* Force gradient on table header */
+			.table-styled thead th {
+			    background: linear-gradient(90deg, #4f46e5, #9333ea) !important;
+			    color: #fff !important;
+			    font-weight: 700;
+			    padding: 12px;
+			    font-size: 14px;
+			    text-transform: uppercase;
+			}
+
+			/* Optional rounded corners */
+			.table-styled thead th:first-child {
+			    border-top-left-radius: 12px !important;
+			}
+			.table-styled thead th:last-child {
+			    border-top-right-radius: 12px !important;
+			}
+			.table-title {
+			    font-size: 28px;
+			    font-weight: 800;
+			    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+			    -webkit-background-clip: text;
+			    -webkit-text-fill-color: transparent;
+			    margin-bottom: 12px;
+			}

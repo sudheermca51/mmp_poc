@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>Patient Registration - MMP</title>
   <link rel="stylesheet" th:href="@{/css/app.css}">
+  
 
   <style>
     /* Page background to match MMP portal */
@@ -14,7 +15,12 @@
       color: #0f172a;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+	  background-image: url('/images/app-bg.jpg');
+	  background-size: cover;
+	  background-position: center;
+	  background-repeat: no-repeat;
     }
+
 
     /* Center layout */
     .center-layout {
@@ -84,27 +90,26 @@
       font-size: 13px;
     }
 
-    /* Inputs */
-    .form-row input,
-    .form-row textarea,
-    .form-row select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #e6eef9;
-      background: #f4fbff;
-      font-size: 14px;
-      color: #0f172a;
-      box-sizing: border-box;
-    }
+	.form-row input,
+	.form-row textarea,
+	.form-row select {
+	  padding: 10px 12px;
+	  border-radius: 8px;
+	  border: 1px solid #cbd5e1; /* clean thin border */
+	  background: #ffffff;
+	  font-size: 15px;
+	  color: #0f172a;
+	  transition: border-color 0.2s ease;
+	  box-sizing: border-box;
+	}
 
-    .form-row input:focus,
-    .form-row textarea:focus,
-    .form-row select:focus {
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(14,165,233,.08);
-      border-color: #0ea5e9;
-    }
+	.form-row input:focus,
+	.form-row textarea:focus,
+	.form-row select:focus {
+	  border-color: #0ea5e9;   /* bright blue focus */
+	  outline: none;
+	  box-shadow: none;        /* no glow — clean minimal look */
+	}
 
     .form-row textarea {
       min-height: 90px;
@@ -112,24 +117,38 @@
     }
 
     /* Button styling (IDENTICAL for both button & anchor) */
-    .btn-primary {
-      background: linear-gradient(90deg, #22c55e, #0ea5e9);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: none;
-      font-weight: 700;
-      font-family: inherit;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+	.btn-primary,
+	a.btn-primary {
+	  display: inline-flex;            /* identical layout */
+	  align-items: center;             /* center text vertically */
+	  justify-content: center;
+	  gap: 8px;
 
-      cursor: pointer;
-      min-width: 150px;
-      display: inline-block;
-      text-align: center;
-      box-shadow: 0 6px 18px rgba(14,165,233,.12);
-      transition: transform .08s ease, box-shadow .12s ease;
-    }
+	  /* Typography — force identical font */
+	  font-family: inherit !important;
+	  font-weight: 700 !important;
+	  font-size: 14px !important;
+	  line-height: 1 !important;
+	  letter-spacing: 0.2px;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	  text-rendering: optimizeLegibility;
+
+	  /* Visuals / box model */
+	  padding: 10px 18px;
+	  border-radius: 999px;
+	  border: none;
+	  cursor: pointer;
+	  text-decoration: none;           /* remove underline on <a> */
+	  color: #fff;
+	  background: linear-gradient(90deg,#22c55e,#0ea5e9);
+	  box-shadow: 0 6px 18px rgba(14,165,233,.12);
+
+	  /* Remove browser-specific styling that can alter text rendering */
+	  -webkit-appearance: none;
+	  appearance: none;
+	  vertical-align: middle;
+	}
 
     .btn-primary:hover {
       transform: translateY(-2px);
@@ -188,10 +207,37 @@
             <input id="lastName" type="text" name="lastName" required autocomplete="family-name">
           </div>
 
-          <div class="form-row">
-            <label for="username">Username <span class="req">*</span></label>
-            <input id="username" type="text" name="username" required autocomplete="username">
-          </div>
+		  <div class="form-row">
+		    <label for="username">Username <span class="req">*</span></label>
+
+		    <!-- Username input -->
+		    <input id="username" type="text" name="username" required autocomplete="username" />
+
+		    <!-- Check availability button BELOW the input -->
+		    <button id="checkBtn" 
+		            type="button" 
+		            style="margin-top:8px;
+		                   padding:10px 14px;
+		                   border-radius:8px;
+		                   border:none;
+		                   cursor:pointer;
+		                   background:#0ea5e9;
+		                   color:#fff;
+		                   font-weight:700;
+		                    min-width: 180px;">
+		        Check availability
+		    </button>
+
+		    <!-- Validation message -->
+		    <div id="usernameMsg" 
+		         role="status" 
+		         aria-live="polite" 
+		         style="margin-top:6px;font-size:0.95rem;"></div>
+
+		    <!-- Suggestions -->
+		    <div id="suggestions" style="margin-top:6px;"></div>
+		  </div>
+
 
           <div class="form-row">
             <label for="password">Password <span class="req">*</span></label>
@@ -223,11 +269,6 @@
           </div>
 
           <div class="form-row full">
-            <label for="address">Address</label>
-            <input type="text" id="address" name="address" />
-          </div>
-
-          <div class="form-row full">
             <div class="action-row">
               <button class="btn-primary" type="submit">Register</button>
               <a th:href="@{/patient/login}" class="btn-primary">Back to login</a>
@@ -239,5 +280,95 @@
 
     </div>
   </div>
+  <script>
+  /* Diagnostic + fallback script for Check availability */
+  (function () {
+    // Run after DOM ready in case script was included in head
+    function onReady(fn) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fn);
+      } else {
+        fn();
+      }
+    }
+
+    onReady(function () {
+      console.log('[DEBUG] check-availability script running');
+
+      const input = document.getElementById('username');
+      const btn = document.getElementById('checkBtn');
+      const msg = document.getElementById('usernameMsg');
+      const suggEl = document.getElementById('suggestions');
+
+      // Basic presence checks
+      console.log('[DEBUG] username element =>', input);
+      console.log('[DEBUG] checkBtn element =>', btn);
+      console.log('[DEBUG] usernameMsg element =>', msg);
+      console.log('[DEBUG] suggestions element =>', suggEl);
+
+      if (!btn) {
+        // fallback: attach onclick directly to button if it exists but listener not attached
+        console.warn('[DEBUG] button not found - cannot attach event listener');
+        return;
+      }
+
+      // Safety: remove previous listeners (in case of hot-reload)
+      btn.replaceWith(btn.cloneNode(true));
+      const newBtn = document.getElementById('checkBtn');
+
+      // core check function
+      async function doCheck() {
+        try {
+          const username = (input && input.value || '').trim().toLowerCase();
+          console.log('[DEBUG] doCheck username=', username);
+          if (!username) {
+            if (msg) { msg.style.color='crimson'; msg.textContent = 'The username cannot be blank. Please choose your desired value.'; }
+            return;
+          }
+          if (msg) { msg.style.color=''; msg.textContent = 'Checking…'; }
+          const res = await fetch('/api/user/check-username?username=' + encodeURIComponent(username), { cache: 'no-store' });
+          console.log('[DEBUG] fetch response status=', res.status);
+          if (!res.ok) {
+            const text = await res.text().catch(()=> '');
+            console.error('[DEBUG] fetch error body:', text);
+            if (msg) { msg.style.color='orange'; msg.textContent = 'Server error: ' + res.status; }
+            return;
+          }
+          const json = await res.json();
+          console.log('[DEBUG] response json=', json);
+          if (!json.validFormat) {
+            if (msg) { msg.style.color='crimson'; msg.textContent = 'Invalid format'; }
+          } else if (json.available) {
+            if (msg) { msg.style.color='green'; msg.textContent = `Yippie! The "${json.username}" you've chosen is available`; }
+          } else {
+            if (msg) { msg.style.color='#0288d1'; msg.textContent = `Sorry, the ID "${json.username}" is already used`; }
+            if (suggEl) {
+              const base = (json.username || '').replace(/[^a-z0-9]/g,'') || json.username;
+              suggEl.innerHTML = '<button type="button" class="sugg">' + base + '01</button>';
+            }
+          }
+        } catch (err) {
+          console.error('[DEBUG] exception while checking username', err);
+          if (msg) msg.textContent = 'Network error';
+        }
+      }
+
+      // Attach listener
+      newBtn.addEventListener('click', doCheck);
+      console.log('[DEBUG] click listener attached to checkBtn');
+
+      // Also allow Enter key on username to check immediately
+      if (input) {
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            doCheck();
+          }
+        });
+      }
+    });
+  })();
+  </script>
+
 </body>
 </html>

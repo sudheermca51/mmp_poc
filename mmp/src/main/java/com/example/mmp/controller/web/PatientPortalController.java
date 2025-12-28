@@ -1,11 +1,8 @@
 package com.example.mmp.controller.web;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.mmp.model.Patient;
@@ -23,12 +19,14 @@ import com.example.mmp.repository.PatientRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+
 @Controller
 @RequestMapping("/patient")
 public class PatientPortalController {
 
 
-    private final PatientRepository patientRepo;
+	@Autowired
+	private PatientRepository patientRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public PatientPortalController(PatientRepository patientRepo,
@@ -70,7 +68,7 @@ public class PatientPortalController {
 			return "patient/patient-login";
 		}
 
-		if (!Boolean.TRUE.equals(p.isApproved())) {
+		if (!Boolean.TRUE.equals(p.getApproved())) {
 			model.addAttribute("error", "Your account is not yet approved by admin");
 			return "patient/patient-login";
 		}
@@ -96,10 +94,10 @@ public class PatientPortalController {
 
 
 		// Login success
+	    session.setAttribute("patientId", p.getId());
 		session.setAttribute("loggedInUser", p.getUsername());
 	 	return "redirect:/patient/home";
 	}
-
 
 	@GetMapping("/register")
 	public String registerForm() {
@@ -115,7 +113,8 @@ public class PatientPortalController {
 			@RequestParam(required = false) String phone,
 			@RequestParam(required = false) String gender,
 			@RequestParam(required = false) String dob,
-			@RequestParam(required = false) String address, RedirectAttributes ra, HttpServletRequest request,
+			//@RequestParam(required = false) String address, 
+			RedirectAttributes ra, HttpServletRequest request,
 			Model model) {
 
 		if (patientRepo.findByUsername(username).isPresent()) {
@@ -134,7 +133,7 @@ public class PatientPortalController {
 		p.setPhone(phone);
 		p.setGender(gender);
 		p.setDob(dob);          // adjust type if your field is Date/LocalDate
-		p.setAddress(address);
+		//p.setAddress(address);
 
 		p.setApproved(false);
 		p.setRejected(false);
@@ -176,96 +175,102 @@ public class PatientPortalController {
 		return null;
 	}
 
-	// GET: show edit form (pre-fill patientDto)
-	@GetMapping("/profile")
-	public String showProfile(Model model, HttpSession session) {
-		String username = resolveUsername(session);
-		if (username == null) return "redirect:/patient/login";
 
-		Patient p = patientRepo.findByUsername(username)
-				.orElseThrow(() -> new IllegalStateException("User not found"));
+	 // ------------------- EDIT PROFILE ----------------------
 
-		// Do not include actual password in the form
-		p.setPassword(null);
-
-		model.addAttribute("patientDto", p);
-		model.addAttribute("activeMenu", "profile");
-		return "patient/patient-edit";
+	
+	// inside PatientPortalController (or another controller annotated with @Controller)
+	@GetMapping("/patient-profile-inline")
+	public String patientProfileInline(Model model) {
+	    // (optional) provide activeMenu so sidebar fragment can highlight, if used
+	    model.addAttribute("activeMenu", "profile");
+	    // view name: src/main/resources/templates/patient/patient-profile-inline.html
+	    return "patient/patient-profile-inline";
 	}
 
-	// POST: update profile (binds to patientDto)
-	@PostMapping("/profile")
-	public String updateProfile(@ModelAttribute("patientDto") Patient dto,
-			@RequestParam(value = "photo", required = false) MultipartFile photo,
-			HttpSession session,
-			Model model,
-			RedirectAttributes ra) {
+	
+    @GetMapping("/profile")
+    public String showProfile(Model model, HttpSession session) {
+        String username = resolveUsername(session);
+        if (username == null) return "redirect:/patient/login";
 
-		String loggedIn = resolveUsername(session);
-		if (loggedIn == null) return "redirect:/patient/login";
+        Patient p = patientRepo.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
 
-		Patient existing = patientRepo.findByUsername(loggedIn)
-				.orElseThrow(() -> new IllegalStateException("User not found"));
+        p.setPassword(null); // do not show password in form
 
-		// username uniqueness check (only when changed)
-		if (dto.getUsername() != null && !dto.getUsername().equals(existing.getUsername())) {
-			if (patientRepo.findByUsername(dto.getUsername()).isPresent()) {
-				model.addAttribute("patientDto", existing);
-				model.addAttribute("usernameError", "Username already exists");
-				return "patient/patient-edit";
-			}
-			existing.setUsername(dto.getUsername());
-			// update session if username stored there
-			Object sessUser = session.getAttribute("loggedInUser");
-			if (sessUser instanceof String) session.setAttribute("loggedInUser", dto.getUsername());
-			else if (sessUser instanceof Patient) {
-				((Patient)sessUser).setUsername(dto.getUsername());
-				session.setAttribute("loggedInUser", sessUser);
-			}
-		}
+        model.addAttribute("patientDto", p);
+        model.addAttribute("activeMenu", "profile");
+        return "patient/patient-edit";
+    }
 
-		// WHITELIST: update only allowed fields
-		existing.setFirstName(dto.getFirstName());
-		existing.setLastName(dto.getLastName());
-		existing.setEmail(dto.getEmail());
-		existing.setPhone(dto.getPhone());
-		existing.setGender(dto.getGender());
-		existing.setDob(dto.getDob());
-		existing.setAddress(dto.getAddress());
+    @PostMapping("/profile")
+    public String updateProfile(
+            @ModelAttribute("patientDto") Patient dto,
+            HttpSession session,
+            Model model,
+            RedirectAttributes ra) {
 
-		// password: only update when provided (non-empty)
-		if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-			existing.setPassword(dto.getPassword()); // matches your current raw-password behavior
-			// If you plan to migrate to hashed passwords later, do it in a controlled migration.
-		}
+        String loggedIn = resolveUsername(session);
+        if (loggedIn == null) return "redirect:/patient/login";
 
-		// Photo handling (optional): save file and set photo path
-		if (photo != null && !photo.isEmpty()) {
-			try {
-				// save to a folder, example; adjust path as needed
-				String uploadsDir = "uploads/patients/";
-				Files.createDirectories(Paths.get(uploadsDir));
-				String filename = "patient-" + existing.getId() + "-" + System.currentTimeMillis() + "-" + photo.getOriginalFilename();
-				Path filePath = Paths.get(uploadsDir).resolve(filename);
-				Files.write(filePath, photo.getBytes());
-				existing.setPhotoPath(filePath.toString()); // store path or URL in DB
-			} catch (IOException ex) {
-				model.addAttribute("error", "Failed to save photo");
-				model.addAttribute("patientDto", dto);
-				return "patient/patient-edit";
-			}
-		}
+        Patient existing = patientRepo.findByUsername(loggedIn)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
 
-		patientRepo.save(existing);
+        // Username change (optional)
+        if (dto.getUsername() != null && !dto.getUsername().equals(existing.getUsername())) {
+            if (patientRepo.findByUsername(dto.getUsername()).isPresent()) {
+                model.addAttribute("patientDto", existing);
+                model.addAttribute("usernameError", "Username already exists");
+                return "patient/patient-edit";
+            }
 
-		ra.addFlashAttribute("success", "Profile updated successfully");
-		return "redirect:/patient/profile";
-	}
+            existing.setUsername(dto.getUsername());
 
+            Object sessUser = session.getAttribute("loggedInUser");
+            if (sessUser instanceof String) session.setAttribute("loggedInUser", dto.getUsername());
+            else if (sessUser instanceof Patient) {
+                ((Patient)sessUser).setUsername(dto.getUsername());
+                session.setAttribute("loggedInUser", sessUser);
+            }
+        }
+
+        // WHITELIST: update only allowed fields
+        existing.setFirstName(dto.getFirstName());
+        existing.setLastName(dto.getLastName());
+        existing.setEmail(dto.getEmail());
+        existing.setPhone(dto.getPhone());
+        existing.setGender(dto.getGender());
+        existing.setDob(dto.getDob());
+        existing.setAddress(dto.getAddress());
+
+        // Password (optional) — encode if provided
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        // Persist changes (no photo logic)
+        patientRepo.save(existing);
+
+        
+		 // message text
+	    String msg = "Profile updated successfully";
+
+	    // 1) preferred: flash attribute (survives redirect)
+	    ra.addFlashAttribute("successMessage", msg);
+	  
+	    model.addAttribute("successMessage", msg);
+       
+        return "redirect:/patient/profile";
+    }
+
+    // -------------------------------------------------------
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "redirect:/patient/login";
 	}
+	 
+
 }

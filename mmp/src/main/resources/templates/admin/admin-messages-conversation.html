@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Conversation</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="layout">
+	<aside class="sidebar admin-sidebar">
+	      <div class="sidebar-header">
+	          <div class="logo">MMP</div>
+	          <div class="subtitle">Admin Portal</div>
+	      </div>
+		  <nav class="sidebar-nav">
+		  	             <a th:classappend="${activeMenu}=='home' ? ' active' : ''"  th:href="@{/admin/home}">			<!-- home SVG -->
+		  	  			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  			      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  			      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  			    </svg>
+		  	  			    <span>Home</span>
+		  	  		</a>
+		  	             <a th:classappend="${activeMenu}=='patients' ? ' active' : ''" th:href="@{/admin/patients}">			 <svg class="menu-svg" width="22" height="22"
+		  	  		       viewBox="0 0 24 24" fill="none"
+		  	  		       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  		    <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/>
+		  	  		    <circle cx="16" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+		  	  		    <path d="M4 19c0-3 3-5 5-5s5 2 5 5"
+		  	  		          stroke="currentColor" stroke-width="1.6"
+		  	  		          stroke-linecap="round"/>
+		  	  		    <path d="M13.5 19c.3-2 2.1-3.5 4-3.5 1.2 0 2.3.5 3 1.2"
+		  	  		          stroke="currentColor" stroke-width="1.6"
+		  	  		          stroke-linecap="round"/>
+		  	  		  </svg>
+		  	  		  <span>Patients</span>
+		  	  		</a>
+		  	             <a th:classappend="${activeMenu}=='claim-center' ? ' active' : ''" th:href="@{/admin/claim-center}">			<svg class="menu-svg" width="22" height="22"
+		  	  		      viewBox="0 0 24 24" fill="none"
+		  	  		      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  		   <rect x="4" y="3" width="16" height="18"
+		  	  		         rx="2" stroke="currentColor" stroke-width="1.6"/>
+		  	  		   <path d="M8 7h8M8 11h8M8 15h5"
+		  	  		         stroke="currentColor" stroke-width="1.6"
+		  	  		         stroke-linecap="round"/>
+		  	  		   <path d="M14.5 15.5l1.5 1.5 3-3"
+		  	  		         stroke="currentColor" stroke-width="1.6"
+		  	  		         stroke-linecap="round" stroke-linejoin="round"/>
+		  	  		 </svg>
+		  	  		 <span>Claim Center</span></a>
+		  	             <a th:classappend="${activeMenu}=='reports' ? ' active' : ''" th:href="@{/admin/reports}">			<!-- report SVG -->
+		  	  				    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  				      <rect x="4" y="3.5" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/>
+		  	  				      <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+		  	  				    </svg>
+		  	  				    <span>Reports</span></a>
+		  	             <a th:classappend="${activeMenu}=='messages' ? ' active' : ''" th:href="@{/admin/messages}">			<!-- message SVG -->
+		  	  			    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  			      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  			    </svg>
+		  	  			    <span>Messages</span></a>
+		  	             <a th:classappend="${activeMenu}=='logout' ? ' active' : ''" th:href="@{/admin/logout}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+		  	  				      <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  				      <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  				      <path d="M21 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+		  	  				    </svg>
+		  	  				    <span>Logout</span>
+		  	  		</a>
+		  	         </nav>
+	  </aside>
+    <main class="layout-main">
+        <div class="card">
+            <h2 th:text="${patient.firstName} + ' ' + ${patient.lastName}"></h2>
+
+            <!-- CLOSE TICKET -->
+            <form method="post" th:action="@{/admin/messages/close}"
+                  style="text-align:right;">
+                <input type="hidden" name="patientId" th:value="${patient.id}">
+				<button class="btn-danger"
+				        th:disabled="${messages.?[status!='CLOSED'].isEmpty()}"
+				        onclick="return confirm('Close this conversation?');">
+				    Close Ticket
+				</button>
+
+            </form>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>From</th>
+                    <th>Text</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${messages}">
+                    <td th:text="${#temporals.format(m.createdAt,'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${m.senderRole}"></td>
+                    <td th:text="${m.text}"></td>
+                    <td th:text="${m.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- REPLY -->
+            <form method="post" th:action="@{/admin/messages/reply}">
+                <input type="hidden" name="patientId" th:value="${patient.id}">
+                <input type="text" name="text"
+                       placeholder="Reply..."
+                       th:disabled="${#lists.contains(messages.?[status=='CLOSED'], true)}">
+                <button class="btn-secondary"
+                        th:disabled="${#lists.contains(messages.?[status=='CLOSED'], true)}">
+                    Send
+                </button>
+            </form>
+
+        </div>
+    </main>
+</div>
+</body>
+</html>

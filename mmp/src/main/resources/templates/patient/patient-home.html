@@ -1,19 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Patient Portal - MMP</title>
+    <title>Patient Portal - Nexus Pulse</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<style>
+		.card h2 {
+				    margin: 0 0 12px 0;
+				    text-align: center;
+				    font-size: 28px;
+				    font-weight: 800;
+				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+				    -webkit-background-clip: text;
+				    -webkit-text-fill-color: transparent;
+			}
+			/* Force gradient on table header */
+			.table-styled thead th {
+			    background: linear-gradient(90deg, #4f46e5, #9333ea) !important;
+			    color: #fff !important;
+			    font-weight: 700;
+			    padding: 12px;
+			    font-size: 14px;
+			    text-transform: uppercase;
+			}
+
+			/* Optional rounded corners */
+			.table-styled thead th:first-child {
+			    border-top-left-radius: 12px !important;
+			}
+			.table-styled thead th:last-child {
+			    border-top-right-radius: 12px !important;
+			}
+
+
+	</style>
 </head>
 <body>
 <div class="layout">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="logo">MMP</div>
+            <div class="logo">Nexus Pulse</div>
             <div class="subtitle">Patient Portal</div>
         </div>
 		<nav class="sidebar-nav">
 		  <a th:classappend="${activeMenu}=='home' ? ' active' : ''" th:href="@{/patient/home}">
-		    <!-- home SVG -->
+			 	 <!-- home SVG -->
 		    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 		      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 		      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -21,7 +51,7 @@
 		    <span>Home</span>
 		  </a>
 
-		  <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" href="#" onclick="alert('Profile placeholder'); return false;">
+		  <a th:classappend="${activeMenu}=='profile' ? ' active' : ''" th:href="@{/patient/profile}">
 		    <!-- profile SVG -->
 		    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 		      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -38,16 +68,6 @@
 		    </svg>
 		    <span>Schedule Appointment</span>
 		  </a>
-
-		  <a th:classappend="${activeMenu}=='info' ? ' active' : ''" href="#" onclick="alert('Information placeholder'); return false;">
-		    <!-- info SVG -->
-		    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-		      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
-		      <path d="M12 8h.01M11 12h1.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-		    </svg>
-		    <span>Information</span>
-		  </a>
-
 		  <a th:classappend="${activeMenu}=='fees' ? ' active' : ''" th:href="@{/patient/fees}">
 		    <!-- rupee SVG -->
 		    <svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -133,8 +153,8 @@
             </div>
         </div>
 
-        <div class="table-card">
-            <h3>Appointments</h3>
+        <div class="card">
+           <h2>Appointments</h2>
             <table class="table-styled">
                 <thead>
                 <tr>

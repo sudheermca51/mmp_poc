@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin - Reports</title>
+    <title>Admin - Upload Reports</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
-	<style>
-		.card h2 {
-				    margin: 0 0 12px 0;
-				    text-align: center;
-				    font-size: 28px;
-				    font-weight: 800;
-				    background: linear-gradient(90deg, #22c55e, #0ea5e9);
-				    -webkit-background-clip: text;
-				    -webkit-text-fill-color: transparent;
-			}
-		</style>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 
 <body>
 <div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar admin-sidebar">
         <div class="sidebar-header">
-            <div class="logo">Nexus Pulse</div>
+            <div class="logo">MMP</div>
             <div class="subtitle">Admin Portal</div>
         </div>
 
@@ -80,39 +72,120 @@
 			  	         </nav>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="layout-main">
 
         <!-- HEADER -->
         <div class="card header-card">
-            <h2>Reports</h2>
-
-            <!-- 🔴 THIS BUTTON WAS MISSING -->
-            <a th:href="@{/admin/reports/upload}"
-               class="btn-primary"
-               style="margin-top: 12px; display: inline-block;">
-                Upload Report
-            </a>
+            <h2>Upload Patient Report</h2>
+            <p>
+                Admin can upload reports by selecting a patient,
+                choosing one of the patient’s appointments,
+                and uploading the report file.
+                <br/>
+                <b>Note:</b> Reports are saved against the appointment,
+                not directly against the patient.
+            </p>
         </div>
 
-        <!-- STATS -->
+        <!-- FORM CARD -->
         <div class="card">
-            <ul>
-                <li>Total Appointments:
-                    <strong th:text="${totalAppointments}"></strong>
-                </li>
-                <li>Total Fee Records:
-                    <strong th:text="${totalFees}"></strong>
-                </li>
-                <li>Total Amount:
-                    <strong th:text="${totalAmount}"></strong>
-                </li>
-                <li>Paid Fees Count:
-                    <strong th:text="${paidCount}"></strong>
-                </li>
-            </ul>
-        </div>
 
+            <form th:action="@{/admin/reports/upload}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <!-- PATIENT SELECTION (ONLY THIS RELOADS PAGE) -->
+                <div class="form-group">
+                    <label class="form-label">Patient</label>
+					<select name="patientId"
+					        class="form-control"
+					        required
+					        onchange="location.href='?patientId=' + this.value">
+
+					    <option value="">-- Select Patient --</option>
+
+					    <option th:each="p : ${patients}"
+					            th:value="${p.id}"
+					            th:text="${p.firstName + ' ' + p.lastName}"
+					            th:selected="${p.id == selectedPatientId}">
+					    </option>
+
+					</select>
+
+                </div>
+
+                <!-- APPOINTMENT SELECTION (NO PAGE REFRESH) -->
+                <div class="form-group">
+                    <label class="form-label">Appointment</label>
+                    <select name="appointmentId" class="form-control" required>
+                        <option value="">-- Select Appointment --</option>
+
+                        <option th:each="a : ${appointments}"
+                                th:value="${a.id}"
+                                th:with="date=${a.appointmentDateTime.toString()}"
+                                th:text="${date + ' - ' + a.doctor.name}">
+                        </option>
+                    </select>
+                </div>
+
+				<!-- REPORT TYPE -->
+				<div class="form-group">
+				    <label class="form-label">Report Type</label>
+				    <select name="reportType"
+				            class="form-control"
+				            required
+				            onchange="updateFee(this.value)">
+				        <option value="">-- Select Report Type --</option>
+				        <option value="BLOOD">Blood Report</option>
+				        <option value="ECG">ECG Report</option>
+				        <option value="ULTRASOUND">Ultrasound Report</option>
+				    </select>
+				</div>
+				<!-- FEE AMOUNT -->
+				<div class="form-group">
+				    <label class="form-label">Fee Amount (₹)</label>
+				    <input type="number"
+				           id="feeAmount"
+				           name="feeAmount"
+				           class="form-control"
+				           readonly
+				           required />
+				</div>
+
+
+                <!-- FILE UPLOAD -->
+                <div class="form-group">
+                    <label class="form-label">Report File</label>
+                    <input type="file"
+                           name="file"
+                           class="form-control"
+                           required />
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        Upload Report
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
     </main>
 </div>
+<script>
+function updateFee(type) {
+    const fees = {
+        BLOOD: 500,
+        ECG: 800,
+        ULTRASOUND: 1200
+    };
+
+    document.getElementById("feeAmount").value = fees[type] || "";
+}
+</script>
+
 </body>
 </html>

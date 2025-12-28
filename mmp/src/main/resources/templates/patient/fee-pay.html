@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pay Fee</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div class="layout">
+    <main class="layout-main">
+
+        <div class="card header-card">
+            <h2>Pay Fee</h2>
+        </div>
+
+        <div class="card">
+            <p><b>Description:</b> <span th:text="${fee.description}"></span></p>
+            <p><b>Amount:</b> ₹<span th:text="${fee.amount}"></span></p>
+
+            <form method="post">
+                <input placeholder="Card Number" required />
+                <input placeholder="Name on Card" required />
+                <input placeholder="Expiry MM/YY" required />
+
+                <button type="submit" class="btn-primary">
+                    Pay Now
+                </button>
+            </form>
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

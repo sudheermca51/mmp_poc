@@ -9,3 +9,4 @@ public class MmpApplication {
         SpringApplication.run(MmpApplication.class, args);
     }
 }
+

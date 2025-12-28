@@ -1,0 +1,210 @@
+
+    /* ---------- FILTER CHIPS ---------- */
+    .filter-chips {
+        display: flex;
+        gap: 10px;
+        margin: 12px 0 18px;
+    }
+
+    .chip {
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #334155;
+        text-decoration: none;
+    }
+
+    .chip.approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .chip.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .chip.active {
+        box-shadow: inset 0 0 0 2px #2563eb;
+    }
+
+    /* ---------- TABLE ---------- */
+    .patients-card { padding: 0; }
+
+    .patients-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .patients-table thead {
+        background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
+    }
+
+    .patients-table thead th {
+        padding: 16px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #334155;
+        border-bottom: 2px solid #c7d2fe;
+        text-align: left;
+    }
+
+    .patients-table tbody tr {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    .patients-table tbody td {
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    /* ---------- SORT ARROWS ---------- */
+    .sort-arrows {
+        display: inline-flex;
+        flex-direction: column;
+        font-size: 9px;
+        margin-left: 6px;
+        color: #94a3b8;
+    }
+
+    /* ---------- STATUS ---------- */
+    .status-pill {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-pill.approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pill.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* ---------- ACTIONS ---------- */
+    .actions-col {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    /* ---------- PAGINATION ---------- */
+    .pagination-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .pagination-controls button {
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+    }
+
+    .pagination-controls button.active {
+        background: #2563eb;
+        color: #fff;
+    }
+
+    /* ---------- EMPTY STATE ---------- */
+    .empty-state {
+        text-align: center;
+        padding: 60px;
+        color: #64748b;
+    }
+	/* Disabled button styling */
+	button:disabled,
+	button[disabled] {
+	    opacity: 0.5;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	    pointer-events: none;
+	}
+
+	/* Disabled approve button – approved look */
+	.btn-secondary:disabled {
+	    background-color: #dcfce7;   /* light green */
+	    color: #166534;              /* dark green text */
+	    border: 1px solid #86efac;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	}
+
+	/* Kill hover effect explicitly */
+	.btn-secondary:disabled:hover {
+	    background-color: #dcfce7;
+	}
+	/* Pagination container */
+	.pagination-footer {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    margin-top: 16px;
+	    padding-top: 12px;
+	    border-top: 1px solid #e5e7eb;
+	}
+
+	/* Page buttons */
+	.pagination-controls {
+	    display: flex;
+	    gap: 6px;
+	}
+
+	.page-btn {
+	    padding: 6px 12px;
+	    border-radius: 6px;
+	    border: 1px solid #d1d5db;
+	    text-decoration: none;
+	    font-size: 14px;
+	    color: #1f2937;
+	    background-color: #ffffff;
+	    transition: all 0.15s ease;
+	}
+
+	/* Hover */
+	.page-btn:hover {
+	    background-color: #f3f4f6;
+	}
+
+	/* Active page */
+	.page-btn.active {
+	    background-color: #2563eb;
+	    color: #ffffff;
+	    border-color: #2563eb;
+	    font-weight: 600;
+	}
+
+	/* Disabled look (when Prev/Next not shown) */
+	.page-btn.disabled {
+	    pointer-events: none;
+	    opacity: 0.4;
+	}
+	/* Clear disabled look for Approve */
+	.btn-disabled,
+	.btn-secondary:disabled {
+	    background-color: #f3f4f6 !important;  /* gray */
+	    color: #9ca3af !important;
+	    border: 1px solid #d1d5db !important;
+	    cursor: not-allowed;
+	    box-shadow: none;
+	}
+
+	/* Kill hover on disabled */
+	.btn-disabled:hover,
+	.btn-secondary:disabled:hover {
+	    background-color: #f3f4f6 !important;
+	}

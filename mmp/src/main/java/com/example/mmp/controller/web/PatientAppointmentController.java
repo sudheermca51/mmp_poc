@@ -1,16 +1,20 @@
 package com.example.mmp.controller.web;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.mmp.model.Appointment;
 import com.example.mmp.model.Doctor;
@@ -25,125 +29,147 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/patient/appointments")
 public class PatientAppointmentController {
 
-	private final PatientRepository patientRepo;
-	private final DoctorRepository doctorRepo;
-	private final AppointmentRepository apptRepo;
+    private static final Logger logger = LoggerFactory.getLogger(PatientAppointmentController.class);
 
-	public PatientAppointmentController(PatientRepository patientRepo,DoctorRepository doctorRepo,
-			AppointmentRepository apptRepo) {
-		this.doctorRepo = doctorRepo;
-		this.apptRepo = apptRepo;
-		this.patientRepo = patientRepo;
-	}
+    private final PatientRepository patientRepo;
+    private final DoctorRepository doctorRepo;
+    private final AppointmentRepository apptRepo;
 
-	// show list page with appointments for logged-in patient
-	@GetMapping
-	public String list(Model model, HttpSession session) {
-		Patient patient = getLoggedPatient(session);            // implement same helper as other controllers
-		if (patient == null) return "redirect:/patient/login";
+    public PatientAppointmentController(PatientRepository patientRepo,
+                                        DoctorRepository doctorRepo,
+                                        AppointmentRepository apptRepo) {
+        this.patientRepo = patientRepo;
+        this.doctorRepo = doctorRepo;
+        this.apptRepo = apptRepo;
+    }
 
-		List<Appointment> appts = apptRepo.findByPatientOrderByAppointmentDateTimeDesc(patient);
-		model.addAttribute("appointments", appts);
-		model.addAttribute("patient", patient);                // for sidebar/header
-		model.addAttribute("activeMenu", "schedule");          // highlights Schedule link
-		return "patient/patient-appointments";
-	}
+    // Show list page with appointments for logged-in patient
+    @GetMapping
+    public String list(Model model, HttpSession session) {
+        Patient patient = getLoggedPatient(session);
+        if (patient == null) {
+            return "redirect:/patient/login";
+        }
 
-	@GetMapping("/new")
-	public String form(Model model, HttpSession session) {
-		Patient patient = getLoggedPatient(session);
-		if (patient == null) return "redirect:/patient/login";
+        List<Appointment> appts = apptRepo.findByPatientOrderByAppointmentDateTimeDesc(patient);
+        model.addAttribute("appointments", appts);
+        model.addAttribute("patient", patient);
+        model.addAttribute("activeMenu", "schedule");
+        return "patient/patient-appointments";
+    }
 
-		List<Doctor> doctors = doctorRepo.findAll();
-		model.addAttribute("doctors", doctors);
-		model.addAttribute("patient", patient);
-		model.addAttribute("activeMenu", "schedule");
-		return "patient/patient-appointment-new";
-	}
-	
-	@PostMapping("/new")
-	public String createAppointment(HttpSession session,
-	        @RequestParam Long doctorId,
-	        @RequestParam("dateTime") String dateTimeStr,
-	        @RequestParam String reason) {
+    @GetMapping("/new")
+    public String form(Model model, HttpSession session) {
+        Patient patient = getLoggedPatient(session);
+        if (patient == null) {
+            return "redirect:/patient/login";
+        }
 
-	    Patient patient = getLoggedPatient(session);
-	    if (patient == null) return "redirect:/patient/login";
+        List<Doctor> doctors = doctorRepo.findAll();
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("patient", patient);
+        model.addAttribute("activeMenu", "schedule");
+        return "patient/patient-appointment-new";
+    }
 
-	    Doctor doctor = doctorRepo.findById(doctorId).orElseThrow();
+    /**
+     * Create appointment (date-only).
+     *
+     * Expects form field: name="date" with value "yyyy-MM-dd".
+     * Converts to LocalDateTime at start of day for persistence.
+     */
+    @PostMapping("/new")
+    public String createAppointment(HttpSession session,
+                                    @RequestParam Long doctorId,
+                                    @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                    @RequestParam(required = false) String reason,
+                                    RedirectAttributes redirectAttrs) {
 
-	    // Try parsing common formats: ISO first (yyyy-MM-dd'T'HH:mm) then space format (yyyy-MM-dd HH:mm)
-	    LocalDateTime dateTime;
-	    DateTimeFormatter iso = DateTimeFormatter.ISO_LOCAL_DATE_TIME;          // "yyyy-MM-dd'T'HH:mm[:ss]"
-	    DateTimeFormatter space = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // Ensure patient logged in
+        Patient patient = getLoggedPatient(session);
+        if (patient == null) {
+            return "redirect:/patient/login";
+        }
 
-	    try {
-	        dateTime = LocalDateTime.parse(dateTimeStr, iso);
-	    } catch (DateTimeParseException ex) {
-	        // fallback to space-separated format
-	        dateTime = LocalDateTime.parse(dateTimeStr, space);
-	    }
+        // Validate doctorId presence (defensive)
+        if (doctorId == null) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Please choose a doctor.");
+            return "redirect:/patient/appointments/new";
+        }
 
-	    Appointment a = new Appointment();
-	    a.setPatient(patient);
-	    a.setDoctor(doctor);
-	    a.setAppointmentDateTime(dateTime);
-	    a.setReason(reason);
-	    a.setStatus("SCHEDULED");
-	    apptRepo.save(a);
-	    return "redirect:/patient/home";
-	}
+        // Validate date presence
+        if (date == null) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Please select a date for the appointment.");
+            return "redirect:/patient/appointments/new";
+        }
 
+        // Date should not be in the past
+        if (date.isBefore(LocalDate.now())) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Selected date is in the past. Please choose a future date.");
+            return "redirect:/patient/appointments/new";
+        }
 
-//	@PostMapping("/new")
-//	public String createAppointment(HttpSession session,
-//			@RequestParam Long doctorId,
-//			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
-//			@RequestParam String reason) {
-//		Patient patient = getLoggedPatient(session);
-//		if (patient == null) return "redirect:/patient/login";
-//		Doctor doctor = doctorRepo.findById(doctorId).orElseThrow();
-//		Appointment a = new Appointment();
-//		a.setPatient(patient);
-//		a.setDoctor(doctor);
-//		a.setAppointmentDateTime(dateTime);
-//		a.setReason(reason);
-//		a.setStatus("SCHEDULED");
-//		apptRepo.save(a);
-//		return "redirect:/patient/home";
-//	}
-	//    public String save(@RequestParam Long doctorId,
-	//                       @RequestParam String dateTime,    // adjust to LocalDateTime binding if needed
-	//                       @RequestParam String reason,
-	//                       HttpSession session) {
-	//    	  Patient patient = getLoggedPatient(session);
-	//          if (patient == null) return "redirect:/patient/login";
-	//          Doctor doctor = doctorRepo.findById(doctorId).orElseThrow();
-	//          Appointment a = new Appointment();
-	//          a.setPatient(patient);
-	//          a.setDoctor(doctor);
-	//          a.setAppointmentDateTime(dateTime);
-	//          a.setReason(reason);
-	//          a.setStatus("SCHEDULED");
-	//          apptRepo.save(a);
-	//          return "redirect:/patient/home";
-	//    }
-	
-	private Patient getLoggedPatient(HttpSession session) {
-		Object obj = session.getAttribute("loggedInUser");
-		if (obj == null) return null;
+        // Validate doctor exists
+        Optional<Doctor> doctorOpt = doctorRepo.findById(doctorId);
+        if (doctorOpt.isEmpty()) {
+            logger.warn("Attempt to create appointment with invalid doctorId={}", doctorId);
+            redirectAttrs.addFlashAttribute("errorMessage", "Selected doctor not found. Please choose a valid doctor.");
+            return "redirect:/patient/appointments/new";
+        }
+        Doctor doctor = doctorOpt.get();
 
-		// If you already stored the Patient object
-		if (obj instanceof Patient) {
-			return (Patient) obj;
-		}
+        // Validate reason (optional but trimmed and minimal length)
+        String reasonTrimmed = (reason == null) ? "" : reason.trim();
+        if (reasonTrimmed.isEmpty()) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Please provide a reason for the appointment.");
+            return "redirect:/patient/appointments/new";
+        }
+        // Optional: limit reason length
+        if (reasonTrimmed.length() > 1000) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Reason is too long (max 1000 characters).");
+            return "redirect:/patient/appointments/new";
+        }
 
-		// If you stored username string (recommended)
-		if (obj instanceof String) {
-			String username = ((String) obj).trim();
-			return patientRepo.findByUsername(username).orElse(null);
-		}
+        // Convert date -> LocalDateTime for persistence (start of day)
+        LocalDateTime appointmentDateTime = date.atStartOfDay();
 
-		return null;
-	}
+        // Create appointment
+        Appointment a = new Appointment();
+        a.setPatient(patient);
+        a.setDoctor(doctor);
+        a.setAppointmentDateTime(appointmentDateTime);
+        a.setReason(reasonTrimmed);
+        a.setStatus("SCHEDULED");
+
+        try {
+            apptRepo.save(a);
+        } catch (Exception ex) {
+            logger.error("Failed to save appointment: patientId={}, doctorId={}, date={}, error={}",
+                    patient.getId(), doctor.getId(), date, ex.getMessage(), ex);
+            redirectAttrs.addFlashAttribute("errorMessage", "Failed to schedule appointment. Please try again later.");
+            return "redirect:/patient/appointments/new";
+        }
+
+        redirectAttrs.addFlashAttribute("successMessage", "Appointment scheduled for " + date.toString());
+        logger.info("Appointment created: patientId={}, doctorId={}, date={}", patient.getId(), doctor.getId(), date);
+
+        return "redirect:/patient/home";
+    }
+
+    // Helper to resolve logged-in patient from session
+    private Patient getLoggedPatient(HttpSession session) {
+        Object obj = session.getAttribute("loggedInUser");
+        if (obj == null) return null;
+
+        if (obj instanceof Patient) {
+            return (Patient) obj;
+        }
+
+        if (obj instanceof String) {
+            String username = ((String) obj).trim();
+            return patientRepo.findByUsername(username).orElse(null);
+        }
+
+        return null;
+    }
 }
