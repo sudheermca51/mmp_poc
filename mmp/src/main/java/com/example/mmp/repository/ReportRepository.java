@@ -25,4 +25,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
      * (Used by Patient module)
      */
     List<Report> findByAppointmentPatientId(Long patientId);
+    
+  
 }
