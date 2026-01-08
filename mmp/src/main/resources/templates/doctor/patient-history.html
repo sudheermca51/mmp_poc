@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient History - Doctor Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">MMP</div>
+            <div class="subtitle">Doctor Portal</div>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/doctor/home}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				      <path d="M3 11.5L12 4l9 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				      <path d="M9 21V13h6v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				    </svg>
+				    <span>Home</span></a>
+            <a class="active" href="#">					<svg class="menu-svg" width="22" height="22"
+								       viewBox="0 0 24 24" fill="none"
+								       xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+								    <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/>
+								    <circle cx="16" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6"/>
+								    <path d="M4 19c0-3 3-5 5-5s5 2 5 5"
+								          stroke="currentColor" stroke-width="1.6"
+								          stroke-linecap="round"/>
+								    <path d="M13.5 19c.3-2 2.1-3.5 4-3.5 1.2 0 2.3.5 3 1.2"
+								          stroke="currentColor" stroke-width="1.6"
+								          stroke-linecap="round"/>
+								  </svg>
+								  <span>Patient History</span></a>
+            <a th:href="@{/doctor/logout}">			<svg class="menu-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				      <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				      <path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				      <path d="M21 12H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+				    </svg>
+				    <span>Logout</span>
+			</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="layout-main">
+
+        <!-- HEADER -->
+        <div class="card header-card">
+            <h2>Patient History</h2>
+            <p>
+                Viewing medical history for
+                <strong th:text="${patient.firstName + ' ' + patient.lastName}"></strong>
+            </p>
+        </div>
+
+        <!-- PATIENT DETAILS -->
+        <div class="card">
+            <h3>Patient Details</h3>
+            <table>
+                <tr>
+                    <td><b>Name</b></td>
+                    <td th:text="${patient.firstName + ' ' + patient.lastName}"></td>
+                </tr>
+                <tr>
+                    <td><b>Gender</b></td>
+                    <td th:text="${patient.gender}"></td>
+                </tr>
+                <tr>
+                    <td><b>DOB</b></td>
+                    <td th:text="${patient.dob}"></td>
+                </tr>
+                <tr>
+                    <td><b>Email</b></td>
+                    <td th:text="${patient.email}"></td>
+                </tr>
+                <tr>
+                    <td><b>Phone</b></td>
+                    <td th:text="${patient.phone}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- CURRENT APPOINTMENT -->
+        <div class="card">
+            <h3>Current Appointment</h3>
+            <p>
+                <b>Date & Time:</b>
+                <span th:text="${#temporals.format(appointment.appointmentDateTime,'yyyy-MM-dd HH:mm')}"></span>
+            </p>
+            <p>
+                <b>Reason:</b>
+                <span th:text="${appointment.reason}"></span>
+            </p>
+            <p>
+                <b>Status:</b>
+                <span th:text="${appointment.status}"></span>
+            </p>
+        </div>
+
+        <!-- PAST APPOINTMENTS -->
+        <div class="card">
+            <h3>Past Appointments</h3>
+
+            <div th:if="${pastAppointments.isEmpty()}">
+                <p>No past appointments found.</p>
+            </div>
+
+            <table th:if="${!pastAppointments.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${pastAppointments}">
+                    <td th:text="${#temporals.format(a.appointmentDateTime,'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${a.reason}"></td>
+                    <td th:text="${a.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- REPORTS -->
+        <div class="card">
+            <h3>Reports</h3>
+
+            <div th:if="${reports.isEmpty()}">
+                <p>No reports uploaded yet.</p>
+            </div>
+
+            <table th:if="${!reports.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Report</th>
+                    <th>Uploaded At</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${reports}">
+                    <td>
+                        <a th:href="@{/patient/reports/download/{id}(id=${r.id})}"
+                           target="_blank"
+                           th:text="${r.fileName}">
+                        </a>
+                    </td>
+                    <td th:text="${#temporals.format(r.uploadedAt,'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FEES -->
+        <div class="card">
+            <h3>Fees</h3>
+
+            <div th:if="${fees.isEmpty()}">
+                <p>No fees generated yet.</p>
+            </div>
+
+            <table th:if="${!fees.isEmpty()}">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="f : ${fees}">
+                    <td th:text="${f.description}"></td>
+                    <td th:text="${f.amount}"></td>
+                    <td th:text="${f.paid ? 'Paid' : 'Pending'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- BACK -->
+        <div class="card">
+            <a th:href="@{/doctor/home}" class="btn-secondary">
+                ← Back to Doctor Home
+            </a>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

@@ -1,22 +1,73 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Doctor Login - MMP</title>
+    <title>Doctor Login - Nexus Pulse</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+	<style>
+			.my-app-body {
+			  margin: 0;
+			  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+			  background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 60%);
+			  color: #0f172a;
+			  -webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			  background-image: url('/images/app-bg.jpg');
+			  background-size: cover;
+			  background-position: center;
+			  background-repeat: no-repeat;
+			}
+			.login-card {
+					    max-width: 480px;        /* prevents stretching */
+					    margin: 60px auto;       /* centers horizontally */
+					    padding: 32px;
+					    border-radius: 16px;
+					    background: white;
+					}
+					.login-container {
+					    display: flex;
+					    justify-content: center;
+					    align-items: center;
+					    min-height: 100vh;   /* vertically center */
+					    padding: 20px;
+					}
+					.btn-primary,
+						a.btn-primary {
+						    padding: 10px 22px !important;
+						    border-radius: 999px !important;
+						    display: inline-flex !important;
+						    align-items: center !important;
+						    justify-content: center !important;
+						    font-weight: 700 !important;
+						    color: #fff;
+						    background: linear-gradient(90deg,#22c55e,#0ea5e9);
+						    text-decoration: none !important; /* important fix */
+						}
+						h2 {
+															    margin: 0 0 12px 0;
+															    text-align: center;
+															    font-size: 28px;
+															    font-weight: 800;
+															    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+															    -webkit-background-clip: text;
+															    -webkit-text-fill-color: transparent;
+														}
+		</style>
 </head>
-<body>
-<div class="center-layout">
-    <div class="card login-card">
-        <h2>Doctor Login</h2>
-        <p class="subtext">For training, you will later pick a doctor or use username/password.</p>
-        <form method="post" th:action="@{/doctor/login}">
-            <label>Doctor ID (placeholder)</label>
-            <input type="text" name="doctorId" required>
-            <button class="btn-primary" type="submit">Login</button>
-        </form>
-        <p class="subtext">In later phases this will be converted to a dropdown of doctors from DB.</p>
-    </div>
-</div>
+<body class="my-app-body">
+
+	<div class="login-container">
+			    <div class="login-card">
+    <h2>Doctor Login</h2>
+	<p class="subtext">Credentials: <strong>drarjun/arjun@123</strong></p>
+	<!-- ✅ MATCHES Controller -->
+	<form th:action="@{/doctor/login}" method="post">
+	    <input type="text" name="username" placeholder="Username" required>
+	    <input type="password" name="password" placeholder="Password" required>
+	    <button class="btn-primary">Login</button>
+
+	    <p th:if="${error}" class="error" th:text="${error}"></p>
+	</form>
+	  </div>
+	</div>
 </body>
 </html>

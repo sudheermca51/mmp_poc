@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Doctor {
+	
+	  // 🔐 LOGIN FIELDS (NEW)
+    private String username;
+    private String password;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +35,20 @@ public class Doctor {
 	public String getPhotoPath() { return photoPath; }
 	public void setPhotoPath(String photoPath) { this.photoPath = photoPath; }
 
+	public String getUsername() {
+	    return username;
+	}
 
+	public void setUsername(String username) {
+	    this.username = username;
+	}
+
+	public String getPassword() {
+	    return password;
+	}
+
+	public void setPassword(String password) {
+	    this.password = password;
+	}
 
 }
