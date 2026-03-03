@@ -97,13 +97,15 @@ public class AdminReportsController {
 
 		model.addAttribute("patients", patientRepo.findAll());
 		model.addAttribute("appointments", List.of());
+	    model.addAttribute("selectedPatientId", patientId);
+
 
 		// 🔴 ADD THIS LINE
 		model.addAttribute("selectedPatientId", patientId);
 
 		if (patientId != null) {
 			model.addAttribute("appointments",
-					apptRepo.findByPatientId(patientId));
+	                apptRepo.findByPatientIdAndStatus(patientId, "COMPLETED"));
 		}
 
 		return "admin/admin-report-upload";
@@ -129,6 +131,12 @@ public class AdminReportsController {
 	        return "redirect:/admin/reports/upload?patientId=" + patientId;
 	    }
 
+	 // 🔒 COMPLETED status check
+	    if (!"COMPLETED".equalsIgnoreCase(appt.getStatus())) {
+	        ra.addFlashAttribute("error",
+	                "Report can be uploaded only for COMPLETED appointments");
+	        return "redirect:/admin/reports/upload?patientId=" + patientId;
+	    }
 	    /* --------------------
 	       1️⃣ SAVE REPORT
 	       -------------------- */
