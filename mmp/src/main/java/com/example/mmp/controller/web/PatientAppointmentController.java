@@ -82,6 +82,8 @@ public class PatientAppointmentController {
     public String createAppointment(HttpSession session,
                                     @RequestParam Long doctorId,
                                     @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                    @RequestParam Integer hour,
+                                    @RequestParam Integer minute,
                                     @RequestParam(required = false) String reason,
                                     RedirectAttributes redirectAttrs) {
 
@@ -131,8 +133,8 @@ public class PatientAppointmentController {
         }
 
         // Convert date -> LocalDateTime for persistence (start of day)
-        LocalDateTime appointmentDateTime = date.atStartOfDay();
-
+        //LocalDateTime appointmentDateTime = date.atStartOfDay();
+        LocalDateTime appointmentDateTime = date.atTime(hour, minute);
         // Create appointment
         Appointment a = new Appointment();
         a.setPatient(patient);
