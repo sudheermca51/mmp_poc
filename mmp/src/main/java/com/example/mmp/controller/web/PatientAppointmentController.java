@@ -24,7 +24,6 @@ import com.example.mmp.repository.DoctorRepository;
 import com.example.mmp.repository.PatientRepository;
 
 import jakarta.servlet.http.HttpSession;
-
 @Controller
 @RequestMapping("/patient/appointments")
 public class PatientAppointmentController {

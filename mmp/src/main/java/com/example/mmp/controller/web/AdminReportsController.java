@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -120,33 +122,57 @@ public class AdminReportsController {
 	        HttpSession session,
 	        RedirectAttributes ra) throws IOException {
 
-	    if (!isLogged(session)) return "redirect:/admin/login";
+	    // 1. Login check
+	    if (!isLogged(session)) {
+	        return "redirect:/admin/login";
+	    }
 
+	    // 2. Appointment validation
 	    Appointment appt = apptRepo.findById(appointmentId)
 	            .orElseThrow(() -> new IllegalArgumentException("Invalid appointment"));
 
-	    // 🔒 Safety check
 	    if (!appt.getPatient().getId().equals(patientId)) {
 	        ra.addFlashAttribute("error", "Invalid appointment selection");
 	        return "redirect:/admin/reports/upload?patientId=" + patientId;
 	    }
 
-	 // 🔒 COMPLETED status check
+	    // 3. Appointment status check
 	    if (!"COMPLETED".equalsIgnoreCase(appt.getStatus())) {
 	        ra.addFlashAttribute("error",
 	                "Report can be uploaded only for COMPLETED appointments");
 	        return "redirect:/admin/reports/upload?patientId=" + patientId;
 	    }
-	    /* --------------------
-	       1️⃣ SAVE REPORT
-	       -------------------- */
+
+	    // 4. File validation
+	    if (file == null || file.isEmpty()) {
+	        ra.addFlashAttribute("error", "Please select a file to upload");
+	        return "redirect:/admin/reports/upload?patientId=" + patientId;
+	    }
+
+	    // 5. Prevent duplicate report
+	    Optional<Report> existingReport = reportRepo.findByAppointmentId(appointmentId);
+	    if (existingReport.isPresent()) {
+	        ra.addFlashAttribute("error", "Report already uploaded for this appointment");
+	        return "redirect:/admin/reports";
+	    }
+
+	    // 6. Prevent duplicate fee
+	    Optional<Fee> existingFee = feeRepo.findByAppointmentId(appointmentId);
+	    if (existingFee.isPresent()) {
+	        ra.addFlashAttribute("error", "Fee already exists for this appointment");
+	        return "redirect:/admin/reports";
+	    }
+
+	    // 7. Save file to disk
 	    Path uploadDir = Paths.get("uploads/reports");
 	    Files.createDirectories(uploadDir);
 
 	    String storedName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 	    Path target = uploadDir.resolve(storedName);
-	    Files.copy(file.getInputStream(), target);
 
+	    Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+
+	    // 8. Save report
 	    Report report = new Report();
 	    report.setAppointment(appt);
 	    report.setFileName(file.getOriginalFilename());
@@ -154,10 +180,9 @@ public class AdminReportsController {
 	    report.setStoragePath(target.toString());
 	    reportRepo.save(report);
 
-	    /* --------------------
-	       2️⃣ SAVE FEE
-	       -------------------- */
-	    ReportType type = ReportType.valueOf(reportType);
+	    // 9. Save fee
+	    ReportType type = ReportType.valueOf(
+	            reportType.replace(" ", "_").toUpperCase());
 
 	    Fee fee = new Fee();
 	    fee.setAppointment(appt);
@@ -166,11 +191,73 @@ public class AdminReportsController {
 	    fee.setPaid(false);
 	    feeRepo.save(fee);
 
+	    // 10. Success message
 	    ra.addFlashAttribute("success",
 	            "Report uploaded and fee added successfully");
 
 	    return "redirect:/admin/reports";
 	}
+//	@PostMapping("/upload")
+//	public String uploadReport(
+//	        @RequestParam Long patientId,
+//	        @RequestParam Long appointmentId,
+//	        @RequestParam String reportType,
+//	        @RequestParam BigDecimal feeAmount,
+//	        @RequestParam("file") MultipartFile file,
+//	        HttpSession session,
+//	        RedirectAttributes ra) throws IOException {
+//
+//	    if (!isLogged(session)) return "redirect:/admin/login";
+//
+//	    Appointment appt = apptRepo.findById(appointmentId)
+//	            .orElseThrow(() -> new IllegalArgumentException("Invalid appointment"));
+//
+//	    // 🔒 Safety check
+//	    if (!appt.getPatient().getId().equals(patientId)) {
+//	        ra.addFlashAttribute("error", "Invalid appointment selection");
+//	        return "redirect:/admin/reports/upload?patientId=" + patientId;
+//	    }
+//
+//	 // 🔒 COMPLETED status check
+//	    if (!"COMPLETED".equalsIgnoreCase(appt.getStatus())) {
+//	        ra.addFlashAttribute("error",
+//	                "Report can be uploaded only for COMPLETED appointments");
+//	        return "redirect:/admin/reports/upload?patientId=" + patientId;
+//	    }
+//	    /* --------------------
+//	       1️⃣ SAVE REPORT
+//	       -------------------- */
+//	    Path uploadDir = Paths.get("uploads/reports");
+//	    Files.createDirectories(uploadDir);
+//
+//	    String storedName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+//	    Path target = uploadDir.resolve(storedName);
+//	    Files.copy(file.getInputStream(), target);
+//
+//	    Report report = new Report();
+//	    report.setAppointment(appt);
+//	    report.setFileName(file.getOriginalFilename());
+//	    report.setContentType(file.getContentType());
+//	    report.setStoragePath(target.toString());
+//	    reportRepo.save(report);
+//
+//	    /* --------------------
+//	       2️⃣ SAVE FEE
+//	       -------------------- */
+//	    ReportType type = ReportType.valueOf(reportType);
+//
+//	    Fee fee = new Fee();
+//	    fee.setAppointment(appt);
+//	    fee.setAmount(feeAmount);
+//	    fee.setDescription(type.getLabel());
+//	    fee.setPaid(false);
+//	    feeRepo.save(fee);
+//
+//	    ra.addFlashAttribute("success",
+//	            "Report uploaded and fee added successfully");
+//
+//	    return "redirect:/admin/reports";
+//	}
 
 
 }
