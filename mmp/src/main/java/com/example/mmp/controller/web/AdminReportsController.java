@@ -91,26 +91,24 @@ public class AdminReportsController {
 
 	@GetMapping("/upload")
 	public String uploadReportForm(
-			@RequestParam(required = false) Long patientId,
-			Model model,
-			HttpSession session) {
+	        @RequestParam(required = false) Long patientId,
+	        Model model,
+	        HttpSession session) {
 
-		if (!isLogged(session)) return "redirect:/admin/login";
+	    if (!isLogged(session)) return "redirect:/admin/login";
 
-		model.addAttribute("patients", patientRepo.findAll());
-		model.addAttribute("appointments", List.of());
+	    model.addAttribute("patients", patientRepo.findAll());
+	    model.addAttribute("appointments", List.of());
 	    model.addAttribute("selectedPatientId", patientId);
 
+	    if (patientId != null) {
+	        List<Appointment> appointments =
+	                apptRepo.findCompletedAppointmentsWithoutReport(patientId);
 
-		// 🔴 ADD THIS LINE
-		model.addAttribute("selectedPatientId", patientId);
+	        model.addAttribute("appointments", appointments);
+	    }
 
-		if (patientId != null) {
-			model.addAttribute("appointments",
-	                apptRepo.findByPatientIdAndStatus(patientId, "COMPLETED"));
-		}
-
-		return "admin/admin-report-upload";
+	    return "admin/admin-report-upload";
 	}
 	@PostMapping("/upload")
 	public String uploadReport(
