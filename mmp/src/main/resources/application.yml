@@ -1,10 +1,5 @@
 server:
-  port: 8443
-  ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: changeit
-    key-store-type: PKCS12
-    key-alias: tomcat
+  port: 8080
 
 spring:
   thymeleaf:
@@ -12,11 +7,11 @@ spring:
 
   datasource:
     url: jdbc:mysql://82.197.92.72:3306/mmpdb?useSSL=false&allowPublicKeyRetrieval=true
-    username: nexuspulse
-    password: StrongPassword@123
+    username: nexuspulse        # or your MySQL user
+    password: StrongPassword@123   # or your MySQL password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update       # creates/updates tables automatically
     show-sql: true
